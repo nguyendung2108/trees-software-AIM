@@ -27,9 +27,8 @@ using System.Collections.Generic;
 
 namespace AIM.Util
 {
-    #region
 
-    
+    #region
 
     #endregion
 

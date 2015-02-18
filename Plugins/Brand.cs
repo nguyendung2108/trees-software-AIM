@@ -139,7 +139,7 @@ namespace AIM.Plugins
                                  Player.GetSpellDamage(target, SpellSlot.R) * 2 > target.Health)
                         {
                             if (
-                                ObjectManager.Get<Obj_AI_Base>()
+                                ObjectHandler.Get<Obj_AI_Base>()
                                     .Count(
                                         enemy =>
                                             (enemy.Type == GameObjectType.obj_AI_Minion ||

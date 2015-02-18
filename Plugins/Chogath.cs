@@ -37,20 +37,19 @@ namespace AIM.Plugins
                 }
                 if (R.IsReady())
                 {
-                    var allMinions = MinionManager.GetMinions(ObjectManager.Player.ServerPosition, Q.Range);
+                    var allMinions = MinionManager.GetMinions(ObjectHandler.Player.ServerPosition, Q.Range);
                     var count = 0;
 
-                    foreach (var buffs in ObjectManager.Player.Buffs.Where(buffs => buffs.DisplayName == "Feast"))
+                    foreach (var buffs in ObjectHandler.Player.Buffs.Where(buffs => buffs.DisplayName == "Feast"))
                     {
                         count = buffs.Count;
                     }
-                    foreach (
-                        var minion in
-                            allMinions.Where(
-                                minion =>
-                                    minion.IsValidTarget(R.Range) &&
-                                    (ObjectManager.Player.GetSpellDamage(minion, SpellSlot.R) > minion.Health))
-                                .Where(minion => count < 6))
+                    foreach (var minion in
+                        allMinions.Where(
+                            minion =>
+                                minion.IsValidTarget(R.Range) &&
+                                (ObjectHandler.Player.GetSpellDamage(minion, SpellSlot.R) > minion.Health))
+                            .Where(minion => count < 6))
                     {
                         R.CastOnUnit(minion);
                     }
@@ -61,30 +60,29 @@ namespace AIM.Plugins
         //From TC-Crew
         private void ExecuteAdditionals()
         {
-            var allMinions = MinionManager.GetMinions(ObjectManager.Player.ServerPosition, Q.Range);
+            var allMinions = MinionManager.GetMinions(ObjectHandler.Player.ServerPosition, Q.Range);
             var count = 0;
 
-            foreach (var buffs in ObjectManager.Player.Buffs.Where(buffs => buffs.DisplayName == "Feast"))
+            foreach (var buffs in ObjectHandler.Player.Buffs.Where(buffs => buffs.DisplayName == "Feast"))
             {
                 count = buffs.Count;
             }
 
             if (R.IsReady())
             {
-                foreach (
-                    var minion in
-                        allMinions.Where(
-                            minion =>
-                                minion.IsValidTarget(R.Range) &&
-                                (ObjectManager.Player.GetSpellDamage(minion, SpellSlot.R) > minion.Health))
-                            .Where(minion => count < 6))
+                foreach (var minion in
+                    allMinions.Where(
+                        minion =>
+                            minion.IsValidTarget(R.Range) &&
+                            (ObjectHandler.Player.GetSpellDamage(minion, SpellSlot.R) > minion.Health))
+                        .Where(minion => count < 6))
                 {
                     R.CastOnUnit(minion);
                 }
             }
 
 
-            foreach (var champion in from champion in ObjectManager.Get<Obj_AI_Hero>()
+            foreach (var champion in from champion in ObjectHandler.Get<Obj_AI_Hero>()
                 where champion.IsValidTarget(Q.Range)
                 let qPrediction = Q.GetPrediction(champion)
                 where (qPrediction.Hitchance == HitChance.Immobile)

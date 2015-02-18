@@ -31,9 +31,8 @@ using ActiveGapcloser = AIM.Util.ActiveGapcloser;
 
 namespace AIM.Plugins
 {
-    #region
 
-    
+    #region
 
     #endregion
 
@@ -50,9 +49,7 @@ namespace AIM.Plugins
             R.SetSkillshot(0.5f, 115f, 1400f, false, SkillshotType.SkillshotLine);
         }
 
-
-        public override
-            void OnUpdate(EventArgs args)
+        public override void OnUpdate(EventArgs args)
         {
             if (ComboMode)
             {

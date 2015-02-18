@@ -22,7 +22,7 @@ namespace AIM.Plugins
 
         public bool IsQActive
         {
-            get { return ObjectManager.Player.HasBuff("FrostShot"); }
+            get { return ObjectHandler.Player.HasBuff("FrostShot"); }
         }
 
         public override void OnUpdate(EventArgs args)

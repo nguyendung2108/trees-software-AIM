@@ -19,7 +19,7 @@ namespace AIM.Autoplay.Util.Objects
 
         public void UpdateTurrets()
         {
-            AllTurrets = ObjectManager.Get<Obj_AI_Turret>().ToList();
+            AllTurrets = ObjectHandler.Get<Obj_AI_Turret>().ToList();
             AllyTurrets = AllTurrets.FindAll(turret => turret.IsValid && !turret.IsDead && turret.IsAlly);
             EnemyTurrets = AllTurrets.FindAll(turret => turret.IsValid && !turret.IsDead && turret.IsEnemy);
         }

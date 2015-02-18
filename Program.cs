@@ -21,7 +21,6 @@ using System;
 using System.Reflection;
 using AIM.Autoplay;
 using AIM.Util;
-using LeagueSharp;
 using LeagueSharp.Common;
 using Version = System.Version;
 
@@ -44,7 +43,7 @@ namespace AIM
 
                 try
                 {
-                    var type = Type.GetType("AIM.Plugins." + ObjectManager.Player.ChampionName);
+                    var type = Type.GetType("AIM.Plugins." + ObjectHandler.Player.ChampionName);
 
                     if (type != null)
                     {

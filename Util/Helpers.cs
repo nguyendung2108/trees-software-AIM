@@ -108,35 +108,35 @@ namespace AIM.Util
 
         public static bool EnemyInRange(int numOfEnemy, float range)
         {
-            return ObjectManager.Player.CountEnemiesInRange((int) range) >= numOfEnemy;
+            return ObjectHandler.Player.CountEnemiesInRange((int) range) >= numOfEnemy;
         }
 
         public static List<Obj_AI_Hero> AllyInRange(float range)
         {
             return
-                ObjectManager.Get<Obj_AI_Hero>()
+                ObjectHandler.Get<Obj_AI_Hero>()
                     .Where(
                         h =>
-                            ObjectManager.Player.Distance(h.Position) < range && h.IsAlly && !h.IsMe && h.IsValid &&
+                            ObjectHandler.Player.Distance(h.Position) < range && h.IsAlly && !h.IsMe && h.IsValid &&
                             !h.IsDead)
-                    .OrderBy(h => ObjectManager.Player.Distance(h.Position))
+                    .OrderBy(h => ObjectHandler.Player.Distance(h.Position))
                     .ToList();
         }
 
         public static Obj_AI_Hero AllyBelowHp(int percentHp, float range)
         {
-            foreach (var ally in ObjectManager.Get<Obj_AI_Hero>())
+            foreach (var ally in ObjectHandler.Get<Obj_AI_Hero>())
             {
                 if (ally.IsMe)
                 {
-                    if (((ObjectManager.Player.Health / ObjectManager.Player.MaxHealth) * 100) < percentHp)
+                    if (((ObjectHandler.Player.Health / ObjectHandler.Player.MaxHealth) * 100) < percentHp)
                     {
                         return ally;
                     }
                 }
                 else if (ally.IsAlly)
                 {
-                    if (Vector3.Distance(ObjectManager.Player.Position, ally.Position) < range &&
+                    if (Vector3.Distance(ObjectHandler.Player.Position, ally.Position) < range &&
                         ((ally.Health / ally.MaxHealth) * 100) < percentHp)
                     {
                         return ally;

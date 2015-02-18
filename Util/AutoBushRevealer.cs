@@ -32,9 +32,8 @@ using SharpDX;
 
 namespace AIM.Util
 {
-    #region
 
-    
+    #region
 
     #endregion
 
@@ -60,7 +59,7 @@ namespace AIM.Util
 
         public AutoBushRevealer(Menu menu)
         {
-            _enemyInfo = ObjectManager.Get<Obj_AI_Hero>().Where(h => h.IsEnemy).Select(x => new EnemyInfo(x)).ToList();
+            _enemyInfo = ObjectHandler.Get<Obj_AI_Hero>().Where(h => h.IsEnemy).Select(x => new EnemyInfo(x)).ToList();
 
             _menu = menu.AddSubMenu(new Menu("Auto Bush Revealer", "AutoBushRevealerMenu"));
             _menu.AddItem(new MenuItem("Auto Bush Revealer", "AutoBushRevealer").SetValue(true));
@@ -82,13 +81,13 @@ namespace AIM.Util
                 Wards.Select(x => x.Key)
                     .Where(id => _menu.Item("AutoBush" + id).GetValue<bool>() && Items.CanUseItem(id))
                     .Select(
-                        wardId => ObjectManager.Player.InventoryItems.FirstOrDefault(slot => slot.Id == (ItemId) wardId))
+                        wardId => ObjectHandler.Player.InventoryItems.FirstOrDefault(slot => slot.Id == (ItemId) wardId))
                     .FirstOrDefault();
         }
 
         private Obj_AI_Base GetNearObject(String name, Vector3 pos, int maxDistance)
         {
-            return ObjectManager.Get<Obj_AI_Base>()
+            return ObjectHandler.Get<Obj_AI_Base>()
                 .FirstOrDefault(x => x.Name == name && x.Distance(pos) <= maxDistance);
         }
 
@@ -112,13 +111,13 @@ namespace AIM.Util
                     _enemyInfo.Where(
                         x =>
                             x.Player.IsValid && !x.Player.IsVisible && !x.Player.IsDead &&
-                            x.Player.Distance(ObjectManager.Player.ServerPosition) < 1000 && time - x.LastSeen < 2500)
+                            x.Player.Distance(ObjectHandler.Player.ServerPosition) < 1000 && time - x.LastSeen < 2500)
                         .Select(x => x.Player))
                 {
                     var bestWardPos = GetWardPos(enemy.ServerPosition, 165, 2);
 
                     if (bestWardPos != enemy.ServerPosition && bestWardPos != Vector3.Zero &&
-                        bestWardPos.Distance(ObjectManager.Player.ServerPosition) <= 600)
+                        bestWardPos.Distance(ObjectHandler.Player.ServerPosition) <= 600)
                     {
                         var timedif = Environment.TickCount - _lastTimeWarded;
 

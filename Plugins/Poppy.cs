@@ -48,10 +48,8 @@ namespace AIM.Plugins
         {
             Obj_AI_Hero getTank = null;
             var tempmaxhp = 0.0f;
-            foreach (
-                var target in
-                    ObjectManager.Get<Obj_AI_Hero>().Where(x => Player.Distance(x) <= R.Range && x.IsEnemy && !x.IsDead)
-                )
+            foreach (var target in
+                ObjectHandler.Get<Obj_AI_Hero>().Where(x => Player.Distance(x) <= R.Range && x.IsEnemy && !x.IsDead))
             {
                 if (target != null)
                 {
@@ -81,14 +79,12 @@ namespace AIM.Plugins
 
             if (Player.CountEnemiesInRange(500) >= 2)
             {
-                foreach (
-                    var hero in
-                        from hero in
-                            ObjectManager.Get<Obj_AI_Hero>()
-                                .Where(
-                                    hero =>
-                                        hero.IsValidTarget(R.Range) && hero.IsEnemy && !hero.IsDead && IsSupport(hero))
-                        select hero)
+                foreach (var hero in
+                    from hero in
+                        ObjectHandler.Get<Obj_AI_Hero>()
+                            .Where(
+                                hero => hero.IsValidTarget(R.Range) && hero.IsEnemy && !hero.IsDead && IsSupport(hero))
+                    select hero)
                 {
                     if (hero != null)
                     {
@@ -108,16 +104,16 @@ namespace AIM.Plugins
             {
                 //from vayne markmans
                 foreach (
-                    var hero in from hero in ObjectManager.Get<Obj_AI_Hero>().Where(hero => hero.IsValidTarget(525f))
+                    var hero in from hero in ObjectHandler.Get<Obj_AI_Hero>().Where(hero => hero.IsValidTarget(525f))
                         let prediction = E.GetPrediction(hero)
                         where
                             NavMesh.GetCollisionFlags(
                                 prediction.UnitPosition.To2D()
-                                    .Extend(ObjectManager.Player.ServerPosition.To2D(), -300)
+                                    .Extend(ObjectHandler.Player.ServerPosition.To2D(), -300)
                                     .To3D()).HasFlag(CollisionFlags.Wall) ||
                             NavMesh.GetCollisionFlags(
                                 prediction.UnitPosition.To2D()
-                                    .Extend(ObjectManager.Player.ServerPosition.To2D(), -(300 / 2))
+                                    .Extend(ObjectHandler.Player.ServerPosition.To2D(), -(300 / 2))
                                     .To3D()).HasFlag(CollisionFlags.Wall)
                         select hero)
                 {

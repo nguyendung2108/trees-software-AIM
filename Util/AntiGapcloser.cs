@@ -32,9 +32,8 @@ using SharpDX;
 
 namespace AIM.Util
 {
-    #region
 
-    
+    #region
 
     #endregion
 
@@ -536,7 +535,7 @@ namespace AIM.Util
                 {
                     if (gapcloser.SkillType == GapcloserType.Targeted ||
                         (gapcloser.SkillType == GapcloserType.Skillshot &&
-                         ObjectManager.Get<Obj_AI_Hero>()
+                         ObjectHandler.Get<Obj_AI_Hero>()
                              .Any(
                                  h =>
                                      h.IsAlly && !h.IsDead &&

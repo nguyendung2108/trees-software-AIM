@@ -41,7 +41,6 @@ namespace AIM.Plugins
             }
         }
 
-
         public override void OnPossibleToInterrupt(Obj_AI_Base unit, InterruptableSpell spell)
         {
             if (spell.DangerLevel < InterruptableDangerLevel.High || unit.IsAlly)

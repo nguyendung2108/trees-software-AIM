@@ -33,9 +33,8 @@ using ActiveGapcloser = AIM.Util.ActiveGapcloser;
 
 namespace AIM.Plugins
 {
-    #region
 
-    
+    #region
 
     #endregion
 
@@ -108,7 +107,7 @@ namespace AIM.Plugins
                         }
                         else
                         {
-                            E.Cast(Helpers.ReversePosition(ObjectManager.Player.Position, Target.Position));
+                            E.Cast(Helpers.ReversePosition(ObjectHandler.Player.Position, Target.Position));
                         }
                     }
 
@@ -141,7 +140,7 @@ namespace AIM.Plugins
                         }
                         else
                         {
-                            E.Cast(Helpers.ReversePosition(ObjectManager.Player.Position, Target.Position));
+                            E.Cast(Helpers.ReversePosition(ObjectHandler.Player.Position, Target.Position));
                         }
                     }
                 }
@@ -218,7 +217,7 @@ namespace AIM.Plugins
             var bestcastposition = new Vector3(0f, 0f, 0f);
 
             foreach (var friend in
-                ObjectManager.Get<Obj_AI_Hero>()
+                ObjectHandler.Get<Obj_AI_Hero>()
                     .Where(
                         hero =>
                             hero.IsAlly && !hero.IsMe && hero.Distance(Player) <= W.Range + 300 &&
@@ -242,7 +241,7 @@ namespace AIM.Plugins
                     }
                 }
 
-                if (friend.Distance(ObjectManager.Player) <= W.Range)
+                if (friend.Distance(ObjectHandler.Player) <= W.Range)
                 {
                     W.Cast(bestcastposition, true);
                     return;
@@ -269,21 +268,21 @@ namespace AIM.Plugins
             var bestcastposition = new Vector3(0f, 0f, 0f);
 
             foreach (var friend in
-                ObjectManager.Get<Obj_AI_Hero>()
+                ObjectHandler.Get<Obj_AI_Hero>()
                     .Where(
                         hero =>
-                            hero.IsAlly && !hero.IsMe && hero.Distance(ObjectManager.Player) <= W.Range + 300 &&
-                            hero.Distance(ObjectManager.Player) <= W.Range - 200 &&
+                            hero.IsAlly && !hero.IsMe && hero.Distance(ObjectHandler.Player) <= W.Range + 300 &&
+                            hero.Distance(ObjectHandler.Player) <= W.Range - 200 &&
                             hero.Health / hero.MaxHealth * 100 >= 20 && !hero.IsDead))
             {
-                foreach (var enemy in ObjectManager.Get<Obj_AI_Hero>().Where(h => h.IsEnemy))
+                foreach (var enemy in ObjectHandler.Get<Obj_AI_Hero>().Where(h => h.IsEnemy))
                 {
                     if (friend == null || !(friend.Distance(enemy) <= 300))
                     {
                         continue;
                     }
 
-                    var center = ObjectManager.Player.Position;
+                    var center = ObjectHandler.Player.Position;
                     const int points = 36;
                     var radius = W.Range;
                     const double slice = 2 * Math.PI / points;
@@ -300,7 +299,7 @@ namespace AIM.Plugins
                         }
                     }
 
-                    if (friend.Distance(ObjectManager.Player) <= W.Range)
+                    if (friend.Distance(ObjectHandler.Player) <= W.Range)
                     {
                         W.Cast(bestcastposition, true);
                         return;

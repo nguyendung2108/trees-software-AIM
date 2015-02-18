@@ -14,7 +14,6 @@ using AIM.Autoplay.Util.Data;
 using AIM.Autoplay.Util.Objects;
 using LeagueSharp;
 using LeagueSharp.Common;
-using LeagueSharp.Common.Data;
 using SharpDX;
 
 namespace AIM.Autoplay.Util.Helpers
@@ -57,13 +56,15 @@ namespace AIM.Autoplay.Util.Helpers
         {
             ItemId.Zhonyas_Hourglass, ItemId.Rabadons_Deathcap,
             ItemId.Rod_of_Ages, ItemId.Needlessly_Large_Rod, ItemId.Chalice_of_Harmony, ItemId.Rylais_Crystal_Scepter,
-            ItemId.Will_of_the_Ancients, ItemId.Locket_of_the_Iron_Solari, ItemId.Void_Staff, ItemId.Iceborn_Gauntlet, ItemId.Abyssal_Scepter, ItemId.Sorcerers_Shoes
+            ItemId.Will_of_the_Ancients, ItemId.Locket_of_the_Iron_Solari, ItemId.Void_Staff, ItemId.Iceborn_Gauntlet,
+            ItemId.Abyssal_Scepter, ItemId.Sorcerers_Shoes
         };
 
         private static readonly ItemId[] ARAMShopListAD =
         {
             ItemId.Blade_of_the_Ruined_King, ItemId.Infinity_Edge,
-            ItemId.Phantom_Dancer, ItemId.Sanguine_Blade, ItemId.Mercurial_Scimitar, ItemId.Guardian_Angel, ItemId.Banshees_Veil, ItemId.Youmuus_Ghostblade, ItemId.Berserkers_Greaves
+            ItemId.Phantom_Dancer, ItemId.Sanguine_Blade, ItemId.Mercurial_Scimitar, ItemId.Guardian_Angel,
+            ItemId.Banshees_Veil, ItemId.Youmuus_Ghostblade, ItemId.Berserkers_Greaves
         };
 
         private static readonly ItemId[] CrystalScar =
@@ -182,7 +183,7 @@ namespace AIM.Autoplay.Util.Helpers
             {
                 const int baseRange = 16000000; //4000^2
                 return hero.IsVisible &&
-                       ObjectManager.Get<Obj_SpawnPoint>()
+                       ObjectHandler.Get<Obj_SpawnPoint>()
                            .Any(sp => sp.Team == hero.Team && hero.Distance(sp.Position, true) < baseRange);
             }
             return false;
@@ -195,14 +196,14 @@ namespace AIM.Autoplay.Util.Helpers
 
         public static Obj_AI_Turret ClosestEnemyTurret(Vector3 point)
         {
-            var turrets = ObjectManager.Get<Obj_AI_Turret>().FindAll(t => !t.IsAlly);
+            var turrets = ObjectHandler.Get<Obj_AI_Turret>().FindAll(t => !t.IsAlly);
             return turrets.OrderBy(t => t.Distance(point)).FirstOrDefault();
         }
 
         public static Obj_AI_Minion LeadMinion()
         {
             return
-                ObjectManager.Get<Obj_AI_Minion>()
+                ObjectHandler.Get<Obj_AI_Minion>()
                     .FindAll(m => m.IsAlly)
                     .OrderBy(m => ClosestEnemyTurret(m.Position))
                     .FirstOrDefault();
@@ -211,7 +212,7 @@ namespace AIM.Autoplay.Util.Helpers
         public static Obj_AI_Minion LeadMinion(Vector3 lane)
         {
             return
-                ObjectManager.Get<Obj_AI_Minion>()
+                ObjectHandler.Get<Obj_AI_Minion>()
                     .FindAll(m => m.IsAlly)
                     .OrderBy(m => ClosestEnemyTurret(lane))
                     .FirstOrDefault();
@@ -220,14 +221,14 @@ namespace AIM.Autoplay.Util.Helpers
         public static int CountNearbyAllyMinions(Obj_AI_Base x, int distance)
         {
             return
-                ObjectManager.Get<Obj_AI_Minion>()
+                ObjectHandler.Get<Obj_AI_Minion>()
                     .Count(minion => minion.IsAlly && !minion.IsDead && minion.Distance(x) < distance);
         }
 
         public static int CountNearbyAllies(Obj_AI_Base x, int distance)
         {
             return
-                ObjectManager.Get<Obj_AI_Hero>()
+                ObjectHandler.Get<Obj_AI_Hero>()
                     .Count(
                         hero =>
                             hero.IsAlly && !hero.IsDead && !HasSmite(hero) && !hero.IsMe && hero.Distance(x) < distance);
@@ -236,7 +237,7 @@ namespace AIM.Autoplay.Util.Helpers
         public static int CountNearbyAllies(Vector3 x, int distance)
         {
             return
-                ObjectManager.Get<Obj_AI_Hero>()
+                ObjectHandler.Get<Obj_AI_Hero>()
                     .Count(
                         hero =>
                             hero.IsAlly && !hero.IsDead && !HasSmite(hero) && !hero.IsMe && hero.Distance(x) < distance);

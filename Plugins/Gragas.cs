@@ -164,9 +164,9 @@ namespace AIM.Plugins
                     {
                         if (E.Cast(t) == Spell.CastStates.SuccessfullyCasted)
                         {
-                            if (ObjectManager.Player.HasBuff("gragaswself"))
+                            if (ObjectHandler.Player.HasBuff("gragaswself"))
                             {
-                                ObjectManager.Player.IssueOrder(GameObjectOrder.AttackTo, t);
+                                ObjectHandler.Player.IssueOrder(GameObjectOrder.AttackTo, t);
                             }
                         }
                     }

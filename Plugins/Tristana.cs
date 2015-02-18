@@ -36,10 +36,9 @@ namespace AIM.Plugins
 
         public void KS()
         {
-            foreach (
-                var target in
-                    ObjectManager.Get<Obj_AI_Hero>()
-                        .Where(x => Player.Distance(x) < R.Range && x.IsValidTarget() && x.IsEnemy && !x.IsDead))
+            foreach (var target in
+                ObjectHandler.Get<Obj_AI_Hero>()
+                    .Where(x => Player.Distance(x) < R.Range && x.IsValidTarget() && x.IsEnemy && !x.IsDead))
             {
                 if (target != null)
                 {

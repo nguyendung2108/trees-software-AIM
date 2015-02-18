@@ -30,9 +30,8 @@ using LeagueSharp.Common;
 
 namespace AIM.Plugins
 {
+
     #region
-
-
 
     #endregion
 
@@ -47,7 +46,7 @@ namespace AIM.Plugins
             R = new Spell(SpellSlot.R, 600);
 
             Q.SetTargetted(250, 1400);
-            W.SetSkillshot(600, (float)(50 * Math.PI / 180), float.MaxValue, false, SkillshotType.SkillshotCone);
+            W.SetSkillshot(600, (float) (50 * Math.PI / 180), float.MaxValue, false, SkillshotType.SkillshotCone);
             R.SetSkillshot(250, 200, float.MaxValue, false, SkillshotType.SkillshotCircle);
         }
 
@@ -117,7 +116,7 @@ namespace AIM.Plugins
 
         private void CastE()
         {
-            if (GetPassiveStacks() < 4 && !ObjectManager.Player.IsRecalling())
+            if (GetPassiveStacks() < 4 && !ObjectHandler.Player.IsRecalling())
             {
                 E.Cast();
             }
@@ -127,7 +126,7 @@ namespace AIM.Plugins
         private int GetPassiveStacks()
         {
             var buffs =
-                ObjectManager.Player.Buffs.Where(
+                ObjectHandler.Player.Buffs.Where(
                     buff => (buff.Name.ToLower() == "pyromania" || buff.Name.ToLower() == "pyromania_particle"));
             var buffInstances = buffs as BuffInstance[] ?? buffs.ToArray();
             if (!buffInstances.Any())

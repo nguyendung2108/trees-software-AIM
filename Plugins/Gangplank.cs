@@ -56,7 +56,7 @@ namespace AIM.Plugins
 
         private void KS()
         {
-            foreach (var target in ObjectManager.Get<Obj_AI_Hero>())
+            foreach (var target in ObjectHandler.Get<Obj_AI_Hero>())
             {
                 if (!target.IsDead && Q.IsReady() && !target.IsAlly && Player.Distance(target.Position) < Q.Range &&
                     Player.GetSpellDamage(target, SpellSlot.Q) > (target.Health + 20))

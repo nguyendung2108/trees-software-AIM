@@ -25,7 +25,7 @@ namespace AIM.Plugins
                 {
                     Q.Cast();
                 }
-                if (W.IsReady() && ObjectManager.Player.HasBuffOfType(BuffType.Slow))
+                if (W.IsReady() && ObjectHandler.Player.HasBuffOfType(BuffType.Slow))
                 {
                     W.Cast();
                 }

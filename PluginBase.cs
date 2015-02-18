@@ -129,7 +129,7 @@ namespace AIM
         /// </summary>
         public Obj_AI_Hero Player
         {
-            get { return ObjectManager.Player; }
+            get { return ObjectHandler.Player; }
         }
 
         /// <summary>

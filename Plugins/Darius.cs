@@ -56,9 +56,8 @@ namespace AIM.Plugins
 
         public void ExecuteKillsteal()
         {
-            foreach (
-                var target in
-                    ObjectManager.Get<Obj_AI_Hero>().Where(x => Player.Distance(x) < R.Range && x.IsEnemy && !x.IsDead))
+            foreach (var target in
+                ObjectHandler.Get<Obj_AI_Hero>().Where(x => Player.Distance(x) < R.Range && x.IsEnemy && !x.IsDead))
             {
                 if (R.IsReady() && Player.Distance(target) <= R.Range && R.IsKillable(target))
                 {
@@ -75,13 +74,13 @@ namespace AIM.Plugins
                 return;
             }
 
-            if (!(ObjectManager.Player.GetSpellDamage(target, SpellSlot.Q, 1) > target.Health))
+            if (!(ObjectHandler.Player.GetSpellDamage(target, SpellSlot.Q, 1) > target.Health))
             {
                 foreach (var buff in target.Buffs)
                 {
                     if (buff.Name == "dariushemo")
                     {
-                        if (ObjectManager.Player.GetSpellDamage(target, SpellSlot.R, 1) * (1 + buff.Count / 5) - 1 >
+                        if (ObjectHandler.Player.GetSpellDamage(target, SpellSlot.R, 1) * (1 + buff.Count / 5) - 1 >
                             (target.Health))
                         {
                             R.CastOnUnit(target, true);
@@ -89,7 +88,7 @@ namespace AIM.Plugins
                     }
                 }
             }
-            else if (ObjectManager.Player.GetSpellDamage(target, SpellSlot.R, 1) - 15 > (target.Health))
+            else if (ObjectHandler.Player.GetSpellDamage(target, SpellSlot.R, 1) - 15 > (target.Health))
             {
                 R.CastOnUnit(target, true);
             }

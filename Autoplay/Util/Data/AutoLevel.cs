@@ -4,7 +4,7 @@
 
 #region
 
-using LeagueSharp;
+
 
 #endregion
 
@@ -15,7 +15,7 @@ namespace AIM.Autoplay.Util.Data
         public static int[] GetSequence()
         {
             var sequence = new int[18];
-            switch (ObjectManager.Player.ChampionName)
+            switch (ObjectHandler.Player.ChampionName)
             {
                 case "Aatrox":
                     sequence = new[] { 1, 2, 3, 2, 2, 4, 2, 3, 2, 3, 4, 3, 3, 1, 1, 4, 1, 1 };

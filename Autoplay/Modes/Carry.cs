@@ -1,7 +1,6 @@
 ﻿using System;
+using AIM.Autoplay.Behaviors;
 using AIM.Autoplay.Util.Helpers;
-using BehaviorSharp;
-using BehaviorSharp.Components.Actions;
 using LeagueSharp;
 using LeagueSharp.Common;
 using SharpDX;
@@ -45,24 +44,18 @@ namespace AIM.Autoplay.Modes
                 return;
             }
 
-            if (sender.IsMe && sender.UnderTurret(true) && target.IsEnemy)
-            {
+            if (sender.IsMe && sender.UnderTurret(true) && target.IsEnemy) {}
 
-            }
-
-            if (sender is Obj_AI_Turret && target.IsMe)
-            {
-                
-            }
+            if (sender is Obj_AI_Turret && target.IsMe) {}
 
             if (sender is Obj_AI_Minion && target.IsMe)
             {
                 var orbwalkingPos = new Vector2
                 {
-                    X = ObjectManager.Player.Position.X + ObjConstants.DefensiveAdditioner,
-                    Y = ObjectManager.Player.Position.Y + ObjConstants.DefensiveAdditioner
+                    X = ObjectHandler.Player.Position.X + ObjConstants.DefensiveAdditioner,
+                    Y = ObjectHandler.Player.Position.Y + ObjConstants.DefensiveAdditioner
                 };
-                ObjectManager.Player.IssueOrder(GameObjectOrder.MoveTo, orbwalkingPos.To3D());
+                ObjectHandler.Player.IssueOrder(GameObjectOrder.MoveTo, orbwalkingPos.To3D());
             }
         }
 
@@ -70,7 +63,7 @@ namespace AIM.Autoplay.Modes
         {
             MetaHandler.DoChecks(); //#TODO rewrite MetaHandler with BehaviorSharp
 
-            Behaviors.MainBehavior.Root.Tick();
+            MainBehavior.Root.Tick();
         }
     }
 }

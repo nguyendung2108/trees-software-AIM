@@ -19,7 +19,7 @@ namespace AIM.Autoplay.Util.Objects
 
         public void UpdateMinions()
         {
-            AllMinions = ObjectManager.Get<Obj_AI_Minion>().ToList();
+            AllMinions = ObjectHandler.Get<Obj_AI_Minion>().ToList();
             AllyMinions =
                 AllMinions.FindAll(
                     minion => minion.IsValid && !minion.IsDead && minion.IsAlly && MinionManager.IsMinion(minion));
@@ -30,7 +30,7 @@ namespace AIM.Autoplay.Util.Objects
 
         public Obj_AI_Minion GetLeadMinion(Vector3? position = null)
         {
-            var pos = position ?? ObjectManager.Player.ServerPosition;
+            var pos = position ?? ObjectHandler.Player.ServerPosition;
             var closestTurret = Turrets.EnemyTurrets.OrderBy(t => t.Distance(pos, true)).FirstOrDefault();
 
             if (closestTurret == null)
@@ -45,9 +45,12 @@ namespace AIM.Autoplay.Util.Objects
 
         public Obj_AI_Minion GetClosestEnemyMinion(Vector3? position = null)
         {
-            var pos = position ?? ObjectManager.Player.ServerPosition;
+            var pos = position ?? ObjectHandler.Player.ServerPosition;
 
-            return EnemyMinions.OrderBy(x => x.Distance(pos, true)).FirstOrDefault(minion => minion.IsValid && !minion.IsDead && minion.IsEnemy && MinionManager.IsMinion(minion));
+            return
+                EnemyMinions.OrderBy(x => x.Distance(pos, true))
+                    .FirstOrDefault(
+                        minion => minion.IsValid && !minion.IsDead && minion.IsEnemy && MinionManager.IsMinion(minion));
         }
     }
 }

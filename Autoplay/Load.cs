@@ -1,18 +1,17 @@
 ﻿using System;
 using AIM.Autoplay.Modes;
 using AIM.Autoplay.Util.Data;
-using AIM.Autoplay.Util.Helpers;
 using LeagueSharp;
 using LeagueSharp.Common;
-using AutoLevel = LeagueSharp.Common.AutoLevel;
-using Orbwalking = AIM.Autoplay.Util.Orbwalking;
+using AutoLevel = AIM.Autoplay.Util.Data.AutoLevel;
 
 namespace AIM.Autoplay
 {
     internal class Load
     {
         public static readonly bool ShouldUsePoroSnaxThisGame = Randoms.RandomDecision();
-        public static int LoadedTime = 0;
+        public static int LoadedTime;
+
         public Load()
         {
             Game.OnWndProc += OnWndProc;
@@ -40,11 +39,10 @@ namespace AIM.Autoplay
                     });
                 Utility.DelayAction.Add(
                     Randoms.Rand.Next(1000, 10000), () =>
-                {
-                    new AutoLevel(Util.Data.AutoLevel.GetSequence());
-                    Console.WriteLine("AutoLevel Init Success!");
-                });
-
+                    {
+                        new LeagueSharp.Common.AutoLevel(AutoLevel.GetSequence());
+                        Console.WriteLine("AutoLevel Init Success!");
+                    });
             }
             catch (Exception e)
             {
@@ -65,8 +63,9 @@ namespace AIM.Autoplay
 
         public static bool UsePorosnax()
         {
-            var trinket = ObjectManager.Player.Spellbook.GetSpell(SpellSlot.Trinket);
-            return trinket != null && trinket.IsReady() && ShouldUsePoroSnaxThisGame && ObjectManager.Player.Spellbook.CastSpell(SpellSlot.Trinket);
+            var trinket = ObjectHandler.Player.Spellbook.GetSpell(SpellSlot.Trinket);
+            return trinket != null && trinket.IsReady() && ShouldUsePoroSnaxThisGame &&
+                   ObjectHandler.Player.Spellbook.CastSpell(SpellSlot.Trinket);
         }
     }
 }

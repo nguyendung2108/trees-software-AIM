@@ -41,7 +41,7 @@ namespace AIM.Plugins
             if (Q.IsReady())
             {
                 if (
-                    ObjectManager.Get<Obj_AI_Hero>()
+                    ObjectHandler.Get<Obj_AI_Hero>()
                         .Where(h => h.IsValidTarget(Q.Range))
                         .Any(enemy => Q.CastIfHitchanceEquals(enemy, HitChance.Immobile)))
                 {

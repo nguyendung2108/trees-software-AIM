@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using AIM.Util;
 using LeagueSharp;
 using LeagueSharp.Common;
 using SharpDX;
-
 
 namespace AIM.Plugins
 {
@@ -37,11 +35,9 @@ namespace AIM.Plugins
             }
         }
 
-
         //from Beaving KarthusSharp
         private void Combo()
         {
-
             CastW(TargetSelector.GetTarget(W.Range, TargetSelector.DamageType.Magical), 20);
 
             if (E.IsReady() && !IsInPassiveForm())
@@ -52,19 +48,23 @@ namespace AIM.Plugins
                 {
                     var enoughMana = GetManaPercent() >= 20;
 
-                    if (ObjectManager.Player.Spellbook.GetSpell(SpellSlot.E).ToggleState == 1)
+                    if (ObjectHandler.Player.Spellbook.GetSpell(SpellSlot.E).ToggleState == 1)
                     {
-                        if (ObjectManager.Player.Distance(target.ServerPosition) <= E.Range && enoughMana)
+                        if (ObjectHandler.Player.Distance(target.ServerPosition) <= E.Range && enoughMana)
                         {
                             _comboE = true;
                             E.Cast();
                         }
                     }
                     else if (!enoughMana)
+                    {
                         RegulateEState(true);
+                    }
                 }
                 else
+                {
                     RegulateEState();
+                }
             }
 
             if (Q.IsReady())
@@ -81,9 +81,13 @@ namespace AIM.Plugins
         private void CastQ(Obj_AI_Base target, int minManaPercent = 0)
         {
             if (!Q.IsReady() || !(GetManaPercent() >= minManaPercent))
+            {
                 return;
+            }
             if (target == null)
+            {
                 return;
+            }
             Q.Width = GetDynamicQWidth(target);
             Q.Cast(target);
         }
@@ -91,14 +95,18 @@ namespace AIM.Plugins
         private void CastQ(Vector2 pos, int minManaPercent = 0)
         {
             if (!Q.IsReady())
+            {
                 return;
+            }
             if (GetManaPercent() >= minManaPercent)
+            {
                 Q.Cast(pos);
+            }
         }
 
         private bool IsInPassiveForm()
         {
-            return ObjectManager.Player.IsZombie; //!ObjectManager.Player.IsHPBarRendered;
+            return ObjectHandler.Player.IsZombie; //!ObjectHandler.Player.IsHPBarRendered;
         }
 
         private float GetDynamicQWidth(Obj_AI_Base target)
@@ -109,30 +117,39 @@ namespace AIM.Plugins
         private void RegulateEState(bool ignoreTargetChecks = false)
         {
             if (!E.IsReady() || IsInPassiveForm() ||
-                ObjectManager.Player.Spellbook.GetSpell(SpellSlot.E).ToggleState != 2)
+                ObjectHandler.Player.Spellbook.GetSpell(SpellSlot.E).ToggleState != 2)
+            {
                 return;
+            }
             var target = TargetSelector.GetTarget(E.Range, TargetSelector.DamageType.Magical);
-            var minions = MinionManager.GetMinions(ObjectManager.Player.ServerPosition, E.Range, MinionTypes.All, MinionTeam.NotAlly);
+            var minions = MinionManager.GetMinions(
+                ObjectHandler.Player.ServerPosition, E.Range, MinionTypes.All, MinionTeam.NotAlly);
 
             if (!ignoreTargetChecks && (target != null || (!_comboE && minions.Count != 0)))
+            {
                 return;
-            E.CastOnUnit(ObjectManager.Player);
+            }
+            E.CastOnUnit(ObjectHandler.Player);
             _comboE = false;
         }
 
         private void CastW(Obj_AI_Base target, int minManaPercent = 0)
         {
             if (!W.IsReady() || !(GetManaPercent() >= minManaPercent))
+            {
                 return;
+            }
             if (target == null)
+            {
                 return;
+            }
             W.Width = GetDynamicWWidth(target);
             W.Cast(target);
         }
 
         public float GetManaPercent()
         {
-            return (ObjectManager.Player.Mana / ObjectManager.Player.MaxMana) * 100f;
+            return (ObjectHandler.Player.Mana / ObjectHandler.Player.MaxMana) * 100f;
         }
 
         private float GetDynamicWWidth(Obj_AI_Base target)
@@ -142,11 +159,11 @@ namespace AIM.Plugins
 
         public void UltKs()
         {
-            foreach (
-                var target in
-                    ObjectManager.Get<Obj_AI_Hero>().Where(x => Player.Distance(x) < R.Range && x.IsEnemy && !x.IsDead))
+            foreach (var target in
+                ObjectHandler.Get<Obj_AI_Hero>().Where(x => Player.Distance(x) < R.Range && x.IsEnemy && !x.IsDead))
             {
-                if (R.IsReady() && Player.Distance(target) <= R.Range && R.IsKillable(target) && (Player.IsZombie || Player.CountEnemiesInRange(1000) < 1))
+                if (R.IsReady() && Player.Distance(target) <= R.Range && R.IsKillable(target) &&
+                    (Player.IsZombie || Player.CountEnemiesInRange(1000) < 1))
                 {
                     R.Cast();
                 }

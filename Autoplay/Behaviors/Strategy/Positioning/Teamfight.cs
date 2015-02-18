@@ -1,28 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using AIM.Autoplay.Util.Data;
 using AIM.Autoplay.Util.Objects;
 using LeagueSharp;
 using LeagueSharp.Common;
 using SharpDX;
-using Color = System.Drawing.Color;
 
 namespace AIM.Autoplay.Behaviors.Strategy.Positioning
 {
-
     /// <summary>
-    /// Stuff used to determine the teamfight behavior ^^
+    ///     Stuff used to determine the teamfight behavior ^^
     /// </summary>
     internal class Teamfight
     {
-        private static Util Utils = new Util();
-
+        private static readonly Util Utils = new Util();
 
         /// <summary>
-        /// Returns a random position in the team zone or the position of the ally champion farthest from base
+        ///     Returns a random position in the team zone or the position of the ally champion farthest from base
         /// </summary>
         internal static Vector2 GetPos()
         {
@@ -32,7 +26,7 @@ namespace AIM.Autoplay.Behaviors.Strategy.Positioning
                 {
                     var allyZonePathList = Util.AllyZone().OrderBy(p => Randoms.Rand.Next()).FirstOrDefault();
                     var allyZoneVectorList = new List<Vector2>();
-                    
+
                     //create vectors from points and remove walls
                     foreach (var point in allyZonePathList)
                     {
@@ -65,11 +59,15 @@ namespace AIM.Autoplay.Behaviors.Strategy.Positioning
                 hfPos.Y = hfPos.Y + Randoms.Rand.Next(-200, 200);
                 return hfPos;
             }
-            
+
             //for SR :s
             var minion =
-                ObjectManager.Get<Obj_AI_Minion>().OrderBy(m => m.Distance(HQ.EnemyHQ)).FirstOrDefault().Position.To2D();
-            var turret = ObjectManager.Get<Obj_AI_Turret>().OrderByDescending(m => m.Distance(HQ.AllyHQ)).FirstOrDefault().Position.To2D();
+                ObjectHandler.Get<Obj_AI_Minion>().OrderBy(m => m.Distance(HQ.EnemyHQ)).FirstOrDefault().Position.To2D();
+            var turret =
+                ObjectHandler.Get<Obj_AI_Turret>()
+                    .OrderByDescending(m => m.Distance(HQ.AllyHQ))
+                    .FirstOrDefault()
+                    .Position.To2D();
             return (minion != null && minion.IsValid()) ? minion : turret;
         }
     }

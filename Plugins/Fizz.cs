@@ -74,7 +74,7 @@ namespace AIM.Plugins
             config.AddBool("ComboR", "Use R", true);
         }
 
-        public static Spellbook spellBook = ObjectManager.Player.Spellbook;
+        public static Spellbook spellBook = ObjectHandler.Player.Spellbook;
         public static SpellDataInst eSpell = spellBook.GetSpell(SpellSlot.E);
     }
 }

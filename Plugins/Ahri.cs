@@ -58,7 +58,7 @@ namespace AIM.Plugins
 
         private bool IsRActive()
         {
-            return ObjectManager.Player.HasBuff("AhriTumble", true);
+            return ObjectHandler.Player.HasBuff("AhriTumble", true);
         }
 
         public override void OnPossibleToInterrupt(Obj_AI_Base unit, InterruptableSpell spell)

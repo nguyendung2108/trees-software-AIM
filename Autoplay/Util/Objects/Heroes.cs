@@ -7,7 +7,7 @@ namespace AIM.Autoplay.Util.Objects
 {
     public class Heroes
     {
-        public static Obj_AI_Hero Me = ObjectManager.Player;
+        public static Obj_AI_Hero Me = ObjectHandler.Player;
         public List<Obj_AI_Hero> AllHeroes;
         public List<Obj_AI_Hero> AllyHeroes;
         public List<Obj_AI_Hero> EnemyHeroes;
@@ -19,7 +19,7 @@ namespace AIM.Autoplay.Util.Objects
 
         public void CreateHeroesList()
         {
-            AllHeroes = ObjectManager.Get<Obj_AI_Hero>().ToList();
+            AllHeroes = ObjectHandler.Get<Obj_AI_Hero>().ToList();
             AllyHeroes = AllHeroes.FindAll(hero => hero.IsAlly);
             EnemyHeroes = AllHeroes.FindAll(hero => hero.IsEnemy);
         }

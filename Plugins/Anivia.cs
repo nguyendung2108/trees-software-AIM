@@ -53,7 +53,7 @@ namespace AIM.Plugins
 
         private void SmartKs()
         {
-            foreach (var target in ObjectManager.Get<Obj_AI_Hero>().Where(x => x.IsValidTarget(1300)))
+            foreach (var target in ObjectHandler.Get<Obj_AI_Hero>().Where(x => x.IsValidTarget(1300)))
             {
                 //ER
                 if (Player.Distance(target.ServerPosition) <= R.Range && R.Instance.ToggleState == 1 &&

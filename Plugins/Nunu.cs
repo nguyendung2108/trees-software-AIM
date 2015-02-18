@@ -32,9 +32,8 @@ using ActiveGapcloser = AIM.Util.ActiveGapcloser;
 
 namespace AIM.Plugins
 {
+
     #region
-
-
 
     #endregion
 

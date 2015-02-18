@@ -32,9 +32,8 @@ using ActiveGapcloser = AIM.Util.ActiveGapcloser;
 
 namespace AIM.Plugins
 {
-    #region
 
-    
+    #region
 
     #endregion
 
@@ -65,7 +64,7 @@ namespace AIM.Plugins
                     if (W.CastCheck(Target, "ComboW"))
                     {
                         foreach (var enemy in
-                            ObjectManager.Get<Obj_AI_Hero>()
+                            ObjectHandler.Get<Obj_AI_Hero>()
                                 .Where(
                                     hero =>
                                         (hero.HasBuffOfType(BuffType.Snare) || hero.HasBuffOfType(BuffType.Stun) ||
@@ -76,7 +75,7 @@ namespace AIM.Plugins
                         }
 
                         foreach (var enemy in
-                            ObjectManager.Get<Obj_AI_Hero>().Where(hero => hero.IsValidTarget(W.Range)))
+                            ObjectHandler.Get<Obj_AI_Hero>().Where(hero => hero.IsValidTarget(W.Range)))
                         {
                             W.CastIfWillHit(enemy, 1);
                             return;
@@ -100,7 +99,7 @@ namespace AIM.Plugins
                     if (W.CastCheck(Target, "HarassW"))
                     {
                         foreach (var enemy in
-                            ObjectManager.Get<Obj_AI_Hero>()
+                            ObjectHandler.Get<Obj_AI_Hero>()
                                 .Where(
                                     hero =>
                                         (hero.HasBuffOfType(BuffType.Snare) || hero.HasBuffOfType(BuffType.Stun) ||
@@ -111,7 +110,7 @@ namespace AIM.Plugins
                         }
 
                         foreach (var enemy in
-                            ObjectManager.Get<Obj_AI_Hero>().Where(hero => hero.IsValidTarget(W.Range)))
+                            ObjectHandler.Get<Obj_AI_Hero>().Where(hero => hero.IsValidTarget(W.Range)))
                         {
                             W.CastIfWillHit(enemy, 1);
                             return;

@@ -10,7 +10,7 @@ namespace AIM.Plugins
         public Irelia()
         {
             Q = new Spell(SpellSlot.Q, 650);
-            W = new Spell(SpellSlot.W, Orbwalking.GetRealAutoAttackRange(ObjectManager.Player));
+            W = new Spell(SpellSlot.W, Orbwalking.GetRealAutoAttackRange(ObjectHandler.Player));
             E = new Spell(SpellSlot.E, 425);
             R = new Spell(SpellSlot.R, 1000);
         }

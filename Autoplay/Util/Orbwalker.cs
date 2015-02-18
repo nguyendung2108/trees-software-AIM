@@ -87,13 +87,9 @@ namespace AIM.Autoplay.Util
         };
 
         // Champs whose auto attacks can't be cancelled
-        private static readonly string[] NoCancelChamps =
-        {
-            "Kalista"
-        };
-
+        private static readonly string[] NoCancelChamps = { "Kalista" };
         // Champs and their spells that won't get cancelled when moving
-        private static readonly Dictionary<string, string[]> NoInterruptSpells = new Dictionary<string, string[]>()
+        private static readonly Dictionary<string, string[]> NoInterruptSpells = new Dictionary<string, string[]>
         {
             { "Varus", new[] { "VarusQ" } },
             { "Lucian", new[] { "LucianR" } }
@@ -113,7 +109,7 @@ namespace AIM.Autoplay.Util
 
         static Orbwalking()
         {
-            Player = ObjectManager.Player;
+            Player = ObjectHandler.Player;
             Obj_AI_Base.OnProcessSpellCast += OnProcessSpell;
             GameObject.OnCreate += Obj_SpellMissile_OnCreate;
             Spellbook.OnStopCast += SpellbookOnStopCast;
@@ -129,7 +125,7 @@ namespace AIM.Autoplay.Util
 
             if (sender.IsValid<Obj_SpellMissile>())
             {
-                var missile = (Obj_SpellMissile)sender;
+                var missile = (Obj_SpellMissile) sender;
                 if (missile.SpellCaster.IsValid<Obj_AI_Hero>() && IsAutoAttack(missile.SData.Name))
                 {
                     FireAfterAttack(missile.SpellCaster, _lastTarget);
@@ -256,7 +252,7 @@ namespace AIM.Autoplay.Util
             var myRange = GetRealAutoAttackRange(target);
             return
                 Vector2.DistanceSquared(
-                    (target is Obj_AI_Base) ? ((Obj_AI_Base)target).ServerPosition.To2D() : target.Position.To2D(),
+                    (target is Obj_AI_Base) ? ((Obj_AI_Base) target).ServerPosition.To2D() : target.Position.To2D(),
                     Player.ServerPosition.To2D()) <= myRange * myRange;
         }
 
@@ -288,9 +284,9 @@ namespace AIM.Autoplay.Util
         {
             if (LastAATick <= Environment.TickCount)
             {
-                return Move && NoCancelChamps.Contains(Player.ChampionName) ?
-                    (Environment.TickCount - LastAATick > 250) :
-                    (Environment.TickCount + Game.Ping / 2 >= LastAATick + Player.AttackCastDelay * 1000 + extraWindup);
+                return Move && NoCancelChamps.Contains(Player.ChampionName)
+                    ? (Environment.TickCount - LastAATick > 250)
+                    : (Environment.TickCount + Game.Ping / 2 >= LastAATick + Player.AttackCastDelay * 1000 + extraWindup);
             }
 
             return false;
@@ -442,7 +438,7 @@ namespace AIM.Autoplay.Util
                 if (unit.IsMe && Spell.Target is Obj_AI_Base)
                 {
                     LastAATick = Environment.TickCount - Game.Ping / 2;
-                    var target = (Obj_AI_Base)Spell.Target;
+                    var target = (Obj_AI_Base) Spell.Target;
                     if (target.IsValid)
                     {
                         FireOnTargetSwitch(target);
@@ -452,7 +448,7 @@ namespace AIM.Autoplay.Util
                     if (IsMelee(unit))
                     {
                         Utility.DelayAction.Add(
-                            (int)(unit.AttackCastDelay * 1000 + 40), () => FireAfterAttack(unit, _lastTarget));
+                            (int) (unit.AttackCastDelay * 1000 + 40), () => FireAfterAttack(unit, _lastTarget));
                     }
                 }
 
@@ -468,7 +464,7 @@ namespace AIM.Autoplay.Util
         {
             private bool _process = true;
             public AttackableUnit Target;
-            public Obj_AI_Base Unit = ObjectManager.Player;
+            public Obj_AI_Base Unit = ObjectHandler.Player;
 
             public bool Process
             {
@@ -489,11 +485,11 @@ namespace AIM.Autoplay.Util
         {
             private const float LaneClearWaitTimeMod = 2f;
             private static Menu _config;
+            private readonly Obj_AI_Hero Player;
             private Obj_AI_Base _forcedTarget;
             private OrbwalkingMode _mode = OrbwalkingMode.None;
             private Vector3 _orbwalkingPoint;
             private Obj_AI_Minion _prevMinion;
-            private readonly Obj_AI_Hero Player;
 
             public Orbwalker(Menu attachToMenu)
             {
@@ -541,7 +537,7 @@ namespace AIM.Autoplay.Util
                     new MenuItem("Orbwalk", "Combo").SetShared().SetValue(new KeyBind(32, KeyBindType.Press)));
 
 
-                Player = ObjectManager.Player;
+                Player = ObjectHandler.Player;
                 Game.OnGameUpdate += GameOnOnGameUpdate;
                 Drawing.OnDraw += DrawingOnOnDraw;
             }
@@ -620,13 +616,13 @@ namespace AIM.Autoplay.Util
             private bool ShouldWait()
             {
                 return
-                    ObjectManager.Get<Obj_AI_Minion>()
+                    ObjectHandler.Get<Obj_AI_Minion>()
                         .Any(
                             minion =>
                                 minion.IsValidTarget() && minion.Team != GameObjectTeam.Neutral &&
                                 InAutoAttackRange(minion) &&
                                 HealthPrediction.LaneClearHealthPrediction(
-                                    minion, (int)((Player.AttackDelay * 1000) * LaneClearWaitTimeMod), FarmDelay) <=
+                                    minion, (int) ((Player.AttackDelay * 1000) * LaneClearWaitTimeMod), FarmDelay) <=
                                 Player.GetAutoAttackDamage(minion));
             }
 
@@ -649,17 +645,17 @@ namespace AIM.Autoplay.Util
                     ActiveMode == OrbwalkingMode.LastHit)
                 {
                     foreach (var minion in
-                        ObjectManager.Get<Obj_AI_Minion>()
+                        ObjectHandler.Get<Obj_AI_Minion>()
                             .Where(
                                 minion =>
                                     minion.IsValidTarget() && InAutoAttackRange(minion) &&
                                     minion.Health <
                                     2 *
-                                    (ObjectManager.Player.BaseAttackDamage + ObjectManager.Player.FlatPhysicalDamageMod))
+                                    (ObjectHandler.Player.BaseAttackDamage + ObjectHandler.Player.FlatPhysicalDamageMod))
                         )
                     {
-                        var t = (int)(Player.AttackCastDelay * 1000) - 100 + Game.Ping / 2 +
-                                1000 * (int)Player.Distance(minion) / (int)GetMyProjectileSpeed();
+                        var t = (int) (Player.AttackCastDelay * 1000) - 100 + Game.Ping / 2 +
+                                1000 * (int) Player.Distance(minion) / (int) GetMyProjectileSpeed();
                         var predHealth = HealthPrediction.GetHealthPrediction(minion, t, FarmDelay);
 
                         if (minion.Team != GameObjectTeam.Neutral && MinionManager.IsMinion(minion, true))
@@ -688,21 +684,21 @@ namespace AIM.Autoplay.Util
                 {
                     /* turrets */
                     foreach (var turret in
-                        ObjectManager.Get<Obj_AI_Turret>().Where(t => t.IsValidTarget() && InAutoAttackRange(t)))
+                        ObjectHandler.Get<Obj_AI_Turret>().Where(t => t.IsValidTarget() && InAutoAttackRange(t)))
                     {
                         return turret;
                     }
 
                     /* inhibitor */
                     foreach (var turret in
-                        ObjectManager.Get<Obj_BarracksDampener>().Where(t => t.IsValidTarget() && InAutoAttackRange(t)))
+                        ObjectHandler.Get<Obj_BarracksDampener>().Where(t => t.IsValidTarget() && InAutoAttackRange(t)))
                     {
                         return turret;
                     }
 
                     /* nexus */
                     foreach (var nexus in
-                        ObjectManager.Get<Obj_HQ>().Where(t => t.IsValidTarget() && InAutoAttackRange(t)))
+                        ObjectHandler.Get<Obj_HQ>().Where(t => t.IsValidTarget() && InAutoAttackRange(t)))
                     {
                         return nexus;
                     }
@@ -721,7 +717,12 @@ namespace AIM.Autoplay.Util
                 /*Jungle minions*/
                 if (ActiveMode == OrbwalkingMode.LaneClear || ActiveMode == OrbwalkingMode.Mixed)
                 {
-                    result = ObjectManager.Get<Obj_AI_Minion>().Where(mob => mob.IsValidTarget() && InAutoAttackRange(mob) && mob.Team == GameObjectTeam.Neutral).MaxOrDefault(mob => mob.MaxHealth);
+                    result =
+                        ObjectHandler.Get<Obj_AI_Minion>()
+                            .Where(
+                                mob =>
+                                    mob.IsValidTarget() && InAutoAttackRange(mob) && mob.Team == GameObjectTeam.Neutral)
+                            .MaxOrDefault(mob => mob.MaxHealth);
                     if (result != null)
                     {
                         return result;
@@ -736,7 +737,7 @@ namespace AIM.Autoplay.Util
                         if (_prevMinion.IsValidTarget() && InAutoAttackRange(_prevMinion))
                         {
                             var predHealth = HealthPrediction.LaneClearHealthPrediction(
-                                _prevMinion, (int)((Player.AttackDelay * 1000) * LaneClearWaitTimeMod), FarmDelay);
+                                _prevMinion, (int) ((Player.AttackDelay * 1000) * LaneClearWaitTimeMod), FarmDelay);
                             if (predHealth >= 2 * Player.GetAutoAttackDamage(_prevMinion) ||
                                 Math.Abs(predHealth - _prevMinion.Health) < float.Epsilon)
                             {
@@ -745,19 +746,19 @@ namespace AIM.Autoplay.Util
                         }
 
                         result = (from minion in
-                                      ObjectManager.Get<Obj_AI_Minion>()
-                                          .Where(minion => minion.IsValidTarget() && InAutoAttackRange(minion))
-                                  let predHealth =
-                                      HealthPrediction.LaneClearHealthPrediction(
-                                          minion, (int)((Player.AttackDelay * 1000) * LaneClearWaitTimeMod), FarmDelay)
-                                  where
-                                      predHealth >= 2 * Player.GetAutoAttackDamage(minion) ||
-                                      Math.Abs(predHealth - minion.Health) < float.Epsilon
-                                  select minion).MaxOrDefault(m => m.Health);
+                            ObjectHandler.Get<Obj_AI_Minion>()
+                                .Where(minion => minion.IsValidTarget() && InAutoAttackRange(minion))
+                            let predHealth =
+                                HealthPrediction.LaneClearHealthPrediction(
+                                    minion, (int) ((Player.AttackDelay * 1000) * LaneClearWaitTimeMod), FarmDelay)
+                            where
+                                predHealth >= 2 * Player.GetAutoAttackDamage(minion) ||
+                                Math.Abs(predHealth - minion.Health) < float.Epsilon
+                            select minion).MaxOrDefault(m => m.Health);
 
                         if (result != null)
                         {
-                            _prevMinion = (Obj_AI_Minion)result;
+                            _prevMinion = (Obj_AI_Minion) result;
                         }
                     }
                 }
@@ -777,8 +778,11 @@ namespace AIM.Autoplay.Util
                     //Prevent canceling important channeled spells
                     if (Player.IsChannelingImportantSpell())
                     {
-                        if (!NoInterruptSpells.ContainsKey(Player.ChampionName) || !NoInterruptSpells[Player.ChampionName].Contains(Player.LastCastedSpellName()))
+                        if (!NoInterruptSpells.ContainsKey(Player.ChampionName) ||
+                            !NoInterruptSpells[Player.ChampionName].Contains(Player.LastCastedSpellName()))
+                        {
                             return;
+                        }
                     }
 
                     var target = GetTarget();
@@ -805,7 +809,7 @@ namespace AIM.Autoplay.Util
                 if (_config.Item("AACircle2").GetValue<Circle>().Active)
                 {
                     foreach (var target in
-                        ObjectManager.Get<Obj_AI_Hero>().Where(target => target.IsValidTarget(1175)))
+                        ObjectHandler.Get<Obj_AI_Hero>().Where(target => target.IsValidTarget(1175)))
                     {
                         Render.Circle.DrawCircle(
                             target.Position, GetRealAutoAttackRange(target) + 65,
