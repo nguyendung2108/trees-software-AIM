@@ -8,6 +8,8 @@
 
 #endregion
 
+using LeagueSharp.Common;
+
 namespace AIM.Autoplay.Util.Data
 {
     public class AutoLevel
