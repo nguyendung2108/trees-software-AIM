@@ -1,4 +1,6 @@
-﻿namespace AIM.Autoplay.Behaviors.Strategy
+﻿using BehaviorSharp.Components.Decorators;
+
+namespace AIM.Autoplay.Behaviors.Strategy
 {
     internal class Inverters
     {

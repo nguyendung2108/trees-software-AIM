@@ -1,4 +1,6 @@
-﻿namespace AIM.Autoplay.Behaviors.Strategy
+﻿using BehaviorSharp.Components.Composites;
+
+namespace AIM.Autoplay.Behaviors.Strategy
 {
     internal class Sequences
     {

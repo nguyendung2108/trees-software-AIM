@@ -4,6 +4,8 @@ using System.Linq;
 using AIM.Autoplay.Modes;
 using AIM.Autoplay.Util.Data;
 using AIM.Autoplay.Util.Objects;
+using BehaviorSharp;
+using BehaviorSharp.Components.Actions;
 using LeagueSharp;
 using LeagueSharp.Common;
 using SharpDX;

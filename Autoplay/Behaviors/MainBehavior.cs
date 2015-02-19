@@ -3,6 +3,8 @@ using System.Linq;
 using AIM.Autoplay.Behaviors.Strategy;
 using AIM.Autoplay.Modes;
 using AIM.Autoplay.Util.Objects;
+using BehaviorSharp;
+using BehaviorSharp.Components.Composites;
 using LeagueSharp;
 using LeagueSharp.Common;
 
