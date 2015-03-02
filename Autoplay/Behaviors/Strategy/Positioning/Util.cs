@@ -82,13 +82,13 @@ namespace AIM.Autoplay.Behaviors.Strategy.Positioning
                 SpellData.GetSpellData(hero.GetSpell(SpellSlot.W).Name),
                 SpellData.GetSpellData(hero.GetSpell(SpellSlot.E).Name)
             };
-            var spellsOrderedByRange = heroSpells.OrderBy(s => s.CastRange.FirstOrDefault());
+            var spellsOrderedByRange = heroSpells.OrderBy(s => s.CastRange);
             if (spellsOrderedByRange.FirstOrDefault() != null)
             {
                 var highestSpellRange = spellsOrderedByRange.FirstOrDefault().CastRange;
                 return new Geometry.Circle(
                     hero.ServerPosition.To2D(),
-                    highestSpellRange[0] > hero.AttackRange ? highestSpellRange[0] : hero.AttackRange);
+                    highestSpellRange > hero.AttackRange ? highestSpellRange : hero.AttackRange);
             }
             return new Geometry.Circle(hero.ServerPosition.To2D(), hero.AttackRange);
         }
