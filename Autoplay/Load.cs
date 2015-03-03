@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using AIM.Autoplay.Modes;
 using AIM.Autoplay.Util.Data;
 using LeagueSharp;
@@ -40,7 +42,7 @@ namespace AIM.Autoplay
                 Utility.DelayAction.Add(
                     Randoms.Rand.Next(1000, 10000), () =>
                     {
-                        new LeagueSharp.Common.AutoLevel(AutoLevel.GetSequence());
+                        new LeagueSharp.Common.AutoLevel(AutoLevel.GetSequence().Select(num => num - 1).ToArray());
                         Console.WriteLine("AutoLevel Init Success!");
                     });
             }
