@@ -43,6 +43,7 @@ namespace AIM.Autoplay
                     Randoms.Rand.Next(1000, 10000), () =>
                     {
                         new LeagueSharp.Common.AutoLevel(AutoLevel.GetSequence().Select(num => num - 1).ToArray());
+                        LeagueSharp.Common.AutoLevel.Enable();
                         Console.WriteLine("AutoLevel Init Success!");
                     });
             }
