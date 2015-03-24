@@ -6,50 +6,52 @@ using LeagueSharp.Common;
 
 namespace AIM.Plugins
 {
-    public class Chogath : PluginBase
-    {
-        public Chogath()
-        {
-            Author = "Shimazaki Haruka";
-            Q = new Spell(SpellSlot.Q, 950);
-            W = new Spell(SpellSlot.W, 675);
-            R = new Spell(SpellSlot.R, 175);
+	public class Chogath : PluginBase
+	{
+		public Chogath()
+		{
+			Author = "Shimazaki Haruka";
+			Q = new Spell(SpellSlot.Q, 950);
+			W = new Spell(SpellSlot.W, 675);
+			R = new Spell(SpellSlot.R, 175);
 
-            Q.SetSkillshot(0.75f, 175f, 1000f, false, SkillshotType.SkillshotCircle);
-            W.SetSkillshot(0.60f, 300f, 1750f, false, SkillshotType.SkillshotCone);
-        }
+			Q.SetSkillshot(0.75f, 175f, 1000f, false, SkillshotType.SkillshotCircle);
+			W.SetSkillshot(0.60f, 300f, 1750f, false, SkillshotType.SkillshotCone);
+		}
 
-        public override void OnUpdate(EventArgs args)
-        {
+		public override void OnUpdate(EventArgs args)
+		{
+			var target = TargetSelector.GetTarget(675, TargetSelector.DamageType.Physical);
             if (ComboMode)
             {
-                if (Q.CastCheck(Target, "ComboQ"))
+                if (Q.CastCheck(target, "ComboQ"))
                 {
-                    W.Cast(Target);
+                    Q.Cast(target);
                 }
-                if (W.CastCheck(Target, "ComboW"))
+                if (W.CastCheck(target, "ComboW"))
                 {
-                    W.Cast(Target);
+                    W.Cast(target);
                 }
-                if (R.CastCheck(Target, "ComboR") && R.IsKillable(Target))
+                if (R.CastCheck(target, "ComboR") && R.IsKillable(target))
                 {
-                    R.Cast(Target);
+                    R.Cast(target);
                 }
                 if (R.IsReady())
                 {
-                    var allMinions = MinionManager.GetMinions(ObjectHandler.Player.ServerPosition, Q.Range);
+                    var allMinions = MinionManager.GetMinions(ObjectManager.Player.ServerPosition, Q.Range);
                     var count = 0;
 
-                    foreach (var buffs in ObjectHandler.Player.Buffs.Where(buffs => buffs.DisplayName == "Feast"))
+                    foreach (var buffs in ObjectManager.Player.Buffs.Where(buffs => buffs.DisplayName == "Feast"))
                     {
                         count = buffs.Count;
                     }
-                    foreach (var minion in
-                        allMinions.Where(
-                            minion =>
-                                minion.IsValidTarget(R.Range) &&
-                                (ObjectHandler.Player.GetSpellDamage(minion, SpellSlot.R) > minion.Health))
-                            .Where(minion => count < 6))
+                    foreach (
+                        var minion in
+                            allMinions.Where(
+                                minion =>
+                                    minion.IsValidTarget(R.Range) &&
+                                    (ObjectManager.Player.GetSpellDamage(minion, SpellSlot.R) > minion.Health))
+                                .Where(minion => count < 6))
                     {
                         R.CastOnUnit(minion);
                     }
@@ -60,29 +62,30 @@ namespace AIM.Plugins
         //From TC-Crew
         private void ExecuteAdditionals()
         {
-            var allMinions = MinionManager.GetMinions(ObjectHandler.Player.ServerPosition, Q.Range);
+            var allMinions = MinionManager.GetMinions(ObjectManager.Player.ServerPosition, Q.Range);
             var count = 0;
 
-            foreach (var buffs in ObjectHandler.Player.Buffs.Where(buffs => buffs.DisplayName == "Feast"))
+            foreach (var buffs in ObjectManager.Player.Buffs.Where(buffs => buffs.DisplayName == "Feast"))
             {
                 count = buffs.Count;
             }
 
             if (R.IsReady())
             {
-                foreach (var minion in
-                    allMinions.Where(
-                        minion =>
-                            minion.IsValidTarget(R.Range) &&
-                            (ObjectHandler.Player.GetSpellDamage(minion, SpellSlot.R) > minion.Health))
-                        .Where(minion => count < 6))
+                foreach (
+                    var minion in
+                        allMinions.Where(
+                            minion =>
+                                minion.IsValidTarget(R.Range) &&
+                                (ObjectManager.Player.GetSpellDamage(minion, SpellSlot.R) > minion.Health))
+                            .Where(minion => count < 6))
                 {
                     R.CastOnUnit(minion);
                 }
             }
 
 
-            foreach (var champion in from champion in ObjectHandler.Get<Obj_AI_Hero>()
+            foreach (var champion in from champion in ObjectManager.Get<Obj_AI_Hero>()
                 where champion.IsValidTarget(Q.Range)
                 let qPrediction = Q.GetPrediction(champion)
                 where (qPrediction.Hitchance == HitChance.Immobile)

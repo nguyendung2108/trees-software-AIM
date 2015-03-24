@@ -32,83 +32,84 @@ using ActiveGapcloser = AIM.Util.ActiveGapcloser;
 
 namespace AIM.Plugins
 {
-
-    #region
+	#region
 
     #endregion
 
     public class Blitzcrank : PluginBase
-    {
-        public Blitzcrank()
-        {
-            Q = new Spell(SpellSlot.Q, 900);
-            W = new Spell(SpellSlot.W, 0);
-            E = new Spell(SpellSlot.E, AttackRange);
-            R = new Spell(SpellSlot.R, 600);
+	{
+		public Blitzcrank()
+		{
+			Q = new Spell(SpellSlot.Q, 900);
+			W = new Spell(SpellSlot.W, 0);
+			E = new Spell(SpellSlot.E, AttackRange);
+			R = new Spell(SpellSlot.R, 600);
 
-            Q.SetSkillshot(0.25f, 70f, 1800f, true, SkillshotType.SkillshotLine);
-        }
+			Q.SetSkillshot(0.25f, 70f, 1800f, true, SkillshotType.SkillshotLine);
+		}
 
-        private bool BlockQ
-        {
-            get
-            {
-                if (!Q.IsReady())
-                {
-                    return true;
-                }
+		private bool BlockQ
+		{
+			get
+			{
+				if (!Q.IsReady())
+				{
+					return true;
+				}
 
-                if (!ConfigValue<bool>("Misc.Q.Block"))
-                {
-                    return false;
-                }
+				if (!ConfigValue<bool>("Misc.Q.Block"))
+				{
+					return false;
+				}
 
-                if (!Target.IsValidTarget())
-                {
-                    return true;
-                }
+				if (!Target.IsValidTarget())
+				{
+					return true;
+				}
 
-                if (Target.HasBuff("BlackShield"))
-                {
-                    return true;
-                }
+				if (Target.HasBuff("BlackShield"))
+				{
+					return true;
+				}
 
-                if (Helpers.AllyInRange(1200)
-                    .Any(ally => ally.Distance(Target) < ally.AttackRange + ally.BoundingRadius))
-                {
-                    return true;
-                }
+				if (Helpers.AllyInRange(1200)
+					.Any(ally => ally.Distance(Target) < ally.AttackRange + ally.BoundingRadius))
+				{
+					return true;
+				}
 
-                return Player.Distance(Target) < ConfigValue<Slider>("Misc.Q.Block.Distance").Value;
-            }
-        }
+				return Player.Distance(Target) < ConfigValue<Slider>("Misc.Q.Block.Distance").Value;
+			}
+		}
 
-        public override void OnUpdate(EventArgs args)
-        {
+		public override void OnUpdate(EventArgs args)
+		{
+							var target = TargetSelector.GetTarget(900, TargetSelector.DamageType.Physical);
+
             try
             {
                 if (ComboMode)
                 {
-                    if (Q.CastCheck(Target, "ComboQ") && !BlockQ)
+                    if (Q.CastCheck(target, "ComboQ") && !BlockQ)
                     {
-                        Q.Cast(Target);
+                        Q.Cast(target);
                     }
 
-                    if (E.CastCheck(Target))
+                    if (E.CastCheck(target))
                     {
                         if (E.Cast())
                         {
                             Orbwalking.ResetAutoAttackTimer();
-                            Player.IssueOrder(GameObjectOrder.AttackUnit, Target);
+                            Player.IssueOrder(GameObjectOrder.AttackUnit, target);
                         }
                     }
 
-                    if (E.IsReady() && Target.IsValidTarget() && Target.HasBuff("RocketGrab"))
+                    if (E.IsReady() && target.IsValidTarget() && Target.HasBuff("RocketGrab"))
                     {
                         if (E.Cast())
                         {
                             Orbwalking.ResetAutoAttackTimer();
-                            Player.IssueOrder(GameObjectOrder.AttackUnit, Target);
+                            Player.IssueOrder(GameObjectOrder.AttackUnit, target);
                         }
                     }
 
@@ -117,7 +118,7 @@ namespace AIM.Plugins
                         W.Cast();
                     }
 
-                    if (R.CastCheck(Target, "ComboR"))
+                    if (R.CastCheck(target, "ComboR"))
                     {
                         if (Helpers.EnemyInRange(ConfigValue<Slider>("ComboCountR").Value, R.Range))
                         {
@@ -130,24 +131,24 @@ namespace AIM.Plugins
                 {
                     if (Q.CastCheck(Target, "HarassQ") && !BlockQ)
                     {
-                        Q.Cast(Target);
+                        Q.Cast(target);
                     }
 
-                    if (E.CastCheck(Target))
+                    if (E.CastCheck(target))
                     {
                         if (E.Cast())
                         {
                             Orbwalking.ResetAutoAttackTimer();
-                            Player.IssueOrder(GameObjectOrder.AttackUnit, Target);
+                            Player.IssueOrder(GameObjectOrder.AttackUnit, target);
                         }
                     }
 
-                    if (E.IsReady() && Target.IsValidTarget() && Target.HasBuff("RocketGrab"))
+                    if (E.IsReady() && target.IsValidTarget() && target.HasBuff("RocketGrab"))
                     {
                         if (E.Cast())
                         {
                             Orbwalking.ResetAutoAttackTimer();
-                            Player.IssueOrder(GameObjectOrder.AttackUnit, Target);
+                            Player.IssueOrder(GameObjectOrder.AttackUnit, target);
                         }
                     }
                 }

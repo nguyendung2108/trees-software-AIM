@@ -1,57 +1,62 @@
 ﻿using System;
-using AIM.Util;
+using System.Collections.Generic;
+using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
+using SharpDX;
+using AIM.Util;
 
 namespace AIM.Plugins
 {
-    public class Leblanc : PluginBase
-    {
-        private bool firstW;
+	public class Leblanc : PluginBase
+	{
+		private bool firstW = false;
+		public Leblanc()
+		{
+			Q = new Spell(SpellSlot.Q, 720);
+			Q.SetTargetted(0.5f, 1500f);
 
-        public Leblanc()
-        {
-            Q = new Spell(SpellSlot.Q, 720);
-            Q.SetTargetted(0.5f, 1500f);
+			W = new Spell(SpellSlot.W, 670);
+			W.SetSkillshot(0.6f, 220f, 1900f, false, SkillshotType.SkillshotCircle);
 
-            W = new Spell(SpellSlot.W, 670);
-            W.SetSkillshot(0.6f, 220f, 1900f, false, SkillshotType.SkillshotCircle);
+			E = new Spell(SpellSlot.E, 900);
+			E.SetSkillshot(0.3f, 80f, 1650f, true, SkillshotType.SkillshotLine);
 
-            E = new Spell(SpellSlot.E, 900);
-            E.SetSkillshot(0.3f, 80f, 1650f, true, SkillshotType.SkillshotLine);
+			R = new Spell(SpellSlot.R, 720);
+		}
 
-            R = new Spell(SpellSlot.R, 720);
-        }
+		public override void OnUpdate(EventArgs args)
+		{
+				            var target = TargetSelector.GetTarget(1400, TargetSelector.DamageType.Magical);
 
-        public override void OnUpdate(EventArgs args)
-        {
+
             if (ComboMode)
             {
-                if (Q.IsReady() && R.IsReady() && Target.IsValidTarget(Q.Range))
+
+                if (Q.IsReady() && R.IsReady() && target.IsValidTarget(Q.Range))
                 {
-                    Q.CastOnUnit(Target);
-                    Utility.DelayAction.Add(100, () => R.CastOnUnit(Target));
+                    Q.CastOnUnit(target);
+                    Utility.DelayAction.Add(100, () => R.CastOnUnit(target));
                 }
 
-                if (W.IsReady() && Target.IsValidTarget(W.Range) && !firstW &&
-                    (Player.HealthPercentage() > 30 || W.IsKillable(Target)))
+                if (W.IsReady() && target.IsValidTarget(W.Range) && !firstW && (Player.HealthPercentage() > 30 || W.IsKillable(target)))
                 {
-                    W.Cast(Target);
+                    W.Cast(target);
                     firstW = true;
                 }
-                if (Q.IsReady() && Target.IsValidTarget(Q.Range))
+                if (Q.IsReady() && target.IsValidTarget(Q.Range))
                 {
-                    Q.CastOnUnit(Target);
+                    Q.CastOnUnit(target);
                 }
-                if (R.IsReady() && Target.IsValidTarget(Q.Range))
+                if (R.IsReady() && target.IsValidTarget(Q.Range))
                 {
-                    R.CastOnUnit(Target);
+                    R.CastOnUnit(target);
                 }
-                if (E.IsReady() && Target.IsValidTarget(700))
+                if (E.IsReady() && target.IsValidTarget(700))
                 {
-                    E.CastIfHitchanceEquals(Target, HitChance.Medium);
+                    E.CastIfHitchanceEquals(Target, HitChance.High);
                 }
-                if (W.IsReady() && firstW && Player.HealthPercentage() < 30)
+                if (W.IsReady() && firstW && Player.HealthPercentage() < 60)
                 {
                     W.Cast();
                     firstW = false;
@@ -63,20 +68,11 @@ namespace AIM.Plugins
                 }
             }
 
-            var pet = Player.Pet as Obj_AI_Base;
-            var isPetValid = pet != null && pet.IsValid && !pet.IsDead && pet.Health > 0 && pet.CanMove;
-            if (isPetValid)
-            {
-                Utility.DelayAction.Add(
-                    100,
-                    () =>
-                    {
-                        pet.IssueOrder(
-                            GameObjectOrder.MoveTo,
-                            (pet.Position + 500 * ((pet.Position - Player.Position).Normalized())));
-                    });
-            }
+  
+
         }
+
+
 
         public override void ComboMenu(Menu config)
         {
@@ -85,5 +81,6 @@ namespace AIM.Plugins
             config.AddBool("ComboE", "Use E", true);
             config.AddBool("ComboR", "Use R", true);
         }
+
     }
 }

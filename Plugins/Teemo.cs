@@ -6,32 +6,34 @@ using SharpDX;
 
 namespace AIM.Plugins
 {
-    public class Teemo : PluginBase
-    {
-        private readonly Random Rand = new Random((42 / 13 * DateTime.Now.Millisecond) + DateTime.Now.Second);
-        private Vector2 pos;
+	public class Teemo : PluginBase
+	{
+		private readonly Random Rand = new Random((42 / 13 * DateTime.Now.Millisecond) + DateTime.Now.Second);
+		private Vector2 pos;
 
-        public Teemo()
-        {
-            Q = new Spell(SpellSlot.Q, 680);
-            W = new Spell(SpellSlot.W);
-            R = new Spell(SpellSlot.R, 230);
-            Q.SetTargetted(0f, 2000f);
-            R.SetSkillshot(0.1f, 75f, float.MaxValue, false, SkillshotType.SkillshotCircle);
-        }
+		public Teemo()
+		{
+			Q = new Spell(SpellSlot.Q, 680);
+			W = new Spell(SpellSlot.W);
+			R = new Spell(SpellSlot.R, 230);
+			Q.SetTargetted(0f, 2000f);
+			R.SetSkillshot(0.1f, 75f, float.MaxValue, false, SkillshotType.SkillshotCircle);
+		}
 
-        public override void OnUpdate(EventArgs args)
-        {
+		public override void OnUpdate(EventArgs args)
+		{
+		var targetteemo = TargetSelector.GetTarget(900, TargetSelector.DamageType.Magical);
+		if (targetteemo==null) return;
             if (ComboMode)
             {
-                if (Q.CastCheck(Target, "ComboQ"))
+                if (Q.CastCheck(targetteemo, "ComboQ"))
                 {
-                    Q.Cast(Target);
+                    Q.Cast(targetteemo);
                 }
 
-                if (R.CastCheck(Target, "ComboR"))
+                if (R.CastCheck(targetteemo, "ComboR"))
                 {
-                    R.Cast(Target);
+                    R.Cast(targetteemo);
                 }
                 if (R.IsReady())
                 {
@@ -39,7 +41,7 @@ namespace AIM.Plugins
 
                     pos.X = Player.Position.X + _randRange;
                     pos.Y = Player.Position.Y + _randRange;
-                    R.Cast(pos.To3D(), UsePackets);
+                    R.Cast(pos.To3D());
                 }
                 if (Orbwalking.InAutoAttackRange(Target) && Player.HealthPercentage() > 30)
                 {

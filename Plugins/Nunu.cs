@@ -32,8 +32,9 @@ using ActiveGapcloser = AIM.Util.ActiveGapcloser;
 
 namespace AIM.Plugins
 {
-
     #region
+
+
 
     #endregion
 
@@ -49,7 +50,7 @@ namespace AIM.Plugins
 
         public override void OnUpdate(EventArgs args)
         {
-            if (ComboMode)
+            if (true)
             {
                 if (Q.IsReady() && ConfigValue<bool>("Combo.Q") &&
                     Player.HealthPercentage() < ConfigValue<Slider>("Combo.Q.Health").Value)
@@ -60,6 +61,7 @@ namespace AIM.Plugins
                         Q.CastOnUnit(minion);
                     }
                 }
+				var tarnunu = TargetSelector.GetTarget(900, TargetSelector.DamageType.Magical);
 
                 var allys = Helpers.AllyInRange(W.Range).OrderByDescending(h => h.FlatPhysicalDamageMod).ToList();
                 if (W.IsReady() && allys.Count > 0 && ConfigValue<bool>("Combo.W"))
@@ -67,14 +69,14 @@ namespace AIM.Plugins
                     W.CastOnUnit(allys.FirstOrDefault());
                 }
 
-                if (W.IsReady() && Target.IsValidTarget(AttackRange) && ConfigValue<bool>("Combo.W"))
+                if (W.IsReady() && tarnunu.IsValidTarget(AttackRange) && ConfigValue<bool>("Combo.W"))
                 {
                     W.CastOnUnit(Player);
                 }
 
                 if (E.IsReady() && Target.IsValidTarget(E.Range) && ConfigValue<bool>("Combo.E"))
                 {
-                    E.CastOnUnit(Target);
+                    E.CastOnUnit(tarnunu);
                 }
                 if (R.IsReady() && Player.CountEnemiesInRange(R.Range) > 2)
                 {
@@ -82,7 +84,7 @@ namespace AIM.Plugins
                 }
             }
 
-            if (HarassMode)
+            if (true)
             {
                 if (Q.IsReady() && ConfigValue<bool>("Harass.Q") &&
                     Player.HealthPercentage() < ConfigValue<Slider>("Harass.Q.Health").Value)
@@ -93,6 +95,7 @@ namespace AIM.Plugins
                         Q.CastOnUnit(minion);
                     }
                 }
+				var tarnunu = TargetSelector.GetTarget(900, TargetSelector.DamageType.Magical);
 
                 var allys = Helpers.AllyInRange(W.Range).OrderByDescending(h => h.FlatPhysicalDamageMod).ToList();
                 if (W.IsReady() && allys.Count > 0 && ConfigValue<bool>("Harass.W"))
@@ -100,14 +103,14 @@ namespace AIM.Plugins
                     W.CastOnUnit(allys.FirstOrDefault());
                 }
 
-                if (W.IsReady() && Target.IsValidTarget(AttackRange) && ConfigValue<bool>("Harass.W"))
+                if (W.IsReady() && tarnunu.IsValidTarget(AttackRange) && ConfigValue<bool>("Harass.W"))
                 {
                     W.CastOnUnit(Player);
                 }
 
-                if (E.IsReady() && Target.IsValidTarget(E.Range) && ConfigValue<bool>("Harass.E"))
+                if (E.IsReady() && tarnunu.IsValidTarget(E.Range) && ConfigValue<bool>("Harass.E"))
                 {
-                    E.CastOnUnit(Target);
+                    E.CastOnUnit(tarnunu);
                 }
             }
         }

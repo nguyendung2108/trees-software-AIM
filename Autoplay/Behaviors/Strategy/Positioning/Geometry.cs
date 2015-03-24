@@ -15,7 +15,6 @@
 // along with Evade. If not, see <http://www.gnu.org/licenses/>.
 
 #region
-
 using System;
 using System.Collections.Generic;
 using ClipperLib;
@@ -25,13 +24,12 @@ using Color = System.Drawing.Color;
 using Path = System.Collections.Generic.List<ClipperLib.IntPoint>;
 using Paths = System.Collections.Generic.List<System.Collections.Generic.List<ClipperLib.IntPoint>>;
 using GamePath = System.Collections.Generic.List<SharpDX.Vector2>;
-
 #endregion
 
 namespace AIM.Autoplay.Behaviors.Strategy.Positioning
 {
     /// <summary>
-    ///     Class that contains the geometry related methods.
+    /// Class that contains the geometry related methods.
     /// </summary>
     public static class Geometry
     {
@@ -54,7 +52,7 @@ namespace AIM.Autoplay.Behaviors.Strategy.Positioning
         }
 
         /// <summary>
-        ///     Returns the position on the path after t milliseconds at speed speed.
+        /// Returns the position on the path after t milliseconds at speed speed.
         /// </summary>
         public static Vector2 PositionAfter(this GamePath self, int t, int speed, int delay = 0)
         {

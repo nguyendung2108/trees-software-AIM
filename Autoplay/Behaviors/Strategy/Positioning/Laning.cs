@@ -1,4 +1,12 @@
-﻿namespace AIM.Autoplay.Behaviors.Strategy.Positioning
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace AIM.Autoplay.Behaviors.Strategy.Positioning
 {
-    internal class Laning {}
+    class Laning
+    {
+    }
 }

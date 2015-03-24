@@ -50,55 +50,7 @@ namespace AIM.Util
 
         public static void UpdateCheck()
         {
-            Task.Factory.StartNew(
-                () =>
-                {
-                    try
-                    {
-                        using (var c = new WebClient())
-                        {
-                            var rawVersion =
-                                c.DownloadString(
-                                    "https://raw.githubusercontent.com/trees-software/AIM/master/Properties/AssemblyInfo.cs");
-                            var match =
-                                new Regex(
-                                    @"\[assembly\: AssemblyVersion\(""(\d{1,})\.(\d{1,})\.(\d{1,})\.(\d{1,})""\)\]")
-                                    .Match(rawVersion);
-
-                            if (match.Success)
-                            {
-                                var gitVersion =
-                                    new Version(
-                                        string.Format(
-                                            "{0}.{1}.{2}.{3}", match.Groups[1], match.Groups[2], match.Groups[3],
-                                            match.Groups[4]));
-
-                                if (gitVersion != Program.Version)
-                                {
-                                    Game.PrintChat(
-                                        "<font color='#15C3AC'>AIM:</font> <font color='#FF0000'>" +
-                                        "OUTDATED - Please Update to Version: " + gitVersion + "</font>");
-                                    Game.PrintChat(
-                                        "<font color='#15C3AC'>AIM:</font> <font color='#FF0000'>" +
-                                        "OUTDATED - Please Update to Version: " + gitVersion + "</font>");
-                                    Game.PrintChat(
-                                        "<font color='#15C3AC'>AIM:</font> <font color='#FF0000'>" +
-                                        "OUTDATED - Please Update to Version: " + gitVersion + "</font>");
-                                    Game.PrintChat(
-                                        "<font color='#15C3AC'>AIM:</font> <font color='#FF0000'>" +
-                                        "OUTDATED - Please Update to Version: " + gitVersion + "</font>");
-                                    Game.PrintChat(
-                                        "<font color='#15C3AC'>AIM:</font> <font color='#FF0000'>" +
-                                        "OUTDATED - Please Update to Version: " + gitVersion + "</font>");
-                                }
-                            }
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        Console.WriteLine(e);
-                    }
-                });
+			Game.PrintChat("Update Check");
         }
 
         public static void PrintMessage(string message)
@@ -108,35 +60,35 @@ namespace AIM.Util
 
         public static bool EnemyInRange(int numOfEnemy, float range)
         {
-            return ObjectHandler.Player.CountEnemiesInRange((int) range) >= numOfEnemy;
+            return ObjectManager.Player.CountEnemiesInRange((int) range) >= numOfEnemy;
         }
 
         public static List<Obj_AI_Hero> AllyInRange(float range)
         {
             return
-                ObjectHandler.Get<Obj_AI_Hero>()
+                ObjectManager.Get<Obj_AI_Hero>()
                     .Where(
                         h =>
-                            ObjectHandler.Player.Distance(h.Position) < range && h.IsAlly && !h.IsMe && h.IsValid &&
+                            ObjectManager.Player.Distance(h.Position) < range && h.IsAlly && !h.IsMe && h.IsValid &&
                             !h.IsDead)
-                    .OrderBy(h => ObjectHandler.Player.Distance(h.Position))
+                    .OrderBy(h => ObjectManager.Player.Distance(h.Position))
                     .ToList();
         }
 
         public static Obj_AI_Hero AllyBelowHp(int percentHp, float range)
         {
-            foreach (var ally in ObjectHandler.Get<Obj_AI_Hero>())
+            foreach (var ally in ObjectManager.Get<Obj_AI_Hero>())
             {
                 if (ally.IsMe)
                 {
-                    if (((ObjectHandler.Player.Health / ObjectHandler.Player.MaxHealth) * 100) < percentHp)
+                    if (((ObjectManager.Player.Health / ObjectManager.Player.MaxHealth) * 100) < percentHp)
                     {
                         return ally;
                     }
                 }
                 else if (ally.IsAlly)
                 {
-                    if (Vector3.Distance(ObjectHandler.Player.Position, ally.Position) < range &&
+                    if (Vector3.Distance(ObjectManager.Player.Position, ally.Position) < range &&
                         ((ally.Health / ally.MaxHealth) * 100) < percentHp)
                     {
                         return ally;

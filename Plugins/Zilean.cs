@@ -24,6 +24,7 @@
 #endregion
 
 using System;
+using System.Linq;
 using AIM.Util;
 using LeagueSharp;
 using LeagueSharp.Common;
@@ -31,44 +32,53 @@ using ActiveGapcloser = AIM.Util.ActiveGapcloser;
 
 namespace AIM.Plugins
 {
-
-    #region
+	#region
 
     #endregion
 
     public class Zilean : PluginBase
-    {
-        public Zilean()
-        {
-            Q = new Spell(SpellSlot.Q, 700);
-            W = new Spell(SpellSlot.W, 0);
-            E = new Spell(SpellSlot.E, 700);
-            R = new Spell(SpellSlot.R, 900);
-        }
+	{
+		public Zilean()
+		{
+			Q = new Spell(SpellSlot.Q, 700);
+			W = new Spell(SpellSlot.W, 0);
+			E = new Spell(SpellSlot.E, 700);
+			R = new Spell(SpellSlot.R, 900);
+		}
 
-        public override void OnUpdate(EventArgs args)
-        {
-            try
-            {
-                if (ComboMode)
-                {
-                    if (Q.CastCheck(Target, "ComboQ"))
+		public override void OnUpdate(EventArgs args)
+		{
+			try
+			{
+				if (ComboMode)
+				{
+					if (Q.CastCheck(Target, "ComboQ"))
+					{
+						Q.Cast(Target);
+					}
+
+					if (W.IsReady() && !Q.IsReady() && ConfigValue<bool>("ComboW"))
+					{
+						W.Cast();
+					}
+
+					// TODO: speed adc/jungler/engage
+					var ally123 = Helpers.AllyInRange(E.Range).OrderByDescending(h => h.FlatPhysicalDamageMod).ToList();
+
+					if (E.IsReady() && Player.CountEnemiesInRange(1000) > 1 && Player.ManaPercentage() > 50 && Player.HealthPercentage() <	 70)
+					{
+						E.CastOnUnit(ally123.FirstOrDefault());
+					}
+					var lowestAlly = ally123.FirstOrDefault();
+					if (R.IsReady() && Player.CountEnemiesInRange(3000) > 0 && Player.HealthPercentage() <20)
                     {
-                        Q.Cast(Target);
+                        R.Cast(Player);
                     }
-
-                    if (W.IsReady() && !Q.IsReady() && ConfigValue<bool>("ComboW"))
+                	if (R.IsReady() && Player.CountEnemiesInRange(3000) > 0 && lowestAlly.HealthPercentage() <20)
                     {
-                        W.Cast();
+                        R.Cast(lowestAlly);
                     }
-
-                    // TODO: speed adc/jungler/engage
-                    if (E.IsReady() && Player.CountEnemiesInRange(2000) > 0 && ConfigValue<bool>("ComboE"))
-                    {
-                        E.Cast(Player);
-                    }
-                }
-
+				}
                 if (HarassMode)
                 {
                     if (Q.CastCheck(Target, "HarassQ"))

@@ -54,6 +54,8 @@ namespace AIM.Autoplay
             }
 
             Game.PrintChat("AIM {0} Successfuly Loaded, Enjoy!", Program.Version);
+            Game.PrintChat("Thanks eLem3ntz and weirdbrian4 for updating!");
+            Game.PrintChat("Currently still working on a version that improves performance by A LOT.");
         }
 
         public static void OnGameUpdate(EventArgs args)

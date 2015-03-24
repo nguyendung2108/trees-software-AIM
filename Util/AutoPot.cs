@@ -81,7 +81,7 @@ namespace AIM.Util
 
         private void OnGameUpdate(EventArgs args)
         {
-            if (ObjectHandler.Player.HasBuff("Recall") || ObjectHandler.Player.InFountain())
+            if (ObjectManager.Player.HasBuff("Recall") || ObjectManager.Player.InFountain())
             {
                 return;
             }
@@ -95,7 +95,7 @@ namespace AIM.Util
                         var healthSlot = GetPotionSlot(PotionType.Health);
                         if (!IsBuffActive(PotionType.Health))
                         {
-                            ObjectHandler.Player.Spellbook.CastSpell(healthSlot.SpellSlot);
+                            ObjectManager.Player.Spellbook.CastSpell(healthSlot.SpellSlot);
                         }
                     }
                 }
@@ -106,7 +106,7 @@ namespace AIM.Util
                         var manaSlot = GetPotionSlot(PotionType.Mana);
                         if (!IsBuffActive(PotionType.Mana))
                         {
-                            ObjectHandler.Player.Spellbook.CastSpell(manaSlot.SpellSlot);
+                            ObjectManager.Player.Spellbook.CastSpell(manaSlot.SpellSlot);
                         }
                     }
                 }
@@ -119,7 +119,7 @@ namespace AIM.Util
         {
             return (from potion in potions
                 where potion.TypeList.Contains(type)
-                from item in ObjectHandler.Player.InventoryItems
+                from item in ObjectManager.Player.InventoryItems
                 where item.Id == potion.ItemId && item.Charges >= potion.MinCharges
                 select item).FirstOrDefault();
         }
@@ -128,19 +128,19 @@ namespace AIM.Util
         {
             return (from potion in potions
                 where potion.TypeList.Contains(type)
-                from buff in ObjectHandler.Player.Buffs
+                from buff in ObjectManager.Player.Buffs
                 where buff.Name == potion.Name && buff.IsActive
                 select potion).Any();
         }
 
         private static float GetPlayerHealthPercentage()
         {
-            return ObjectHandler.Player.Health * 100 / ObjectHandler.Player.MaxHealth;
+            return ObjectManager.Player.Health * 100 / ObjectManager.Player.MaxHealth;
         }
 
         private static float GetPlayerManaPercentage()
         {
-            return ObjectHandler.Player.Mana * 100 / ObjectHandler.Player.MaxMana;
+            return ObjectManager.Player.Mana * 100 / ObjectManager.Player.MaxMana;
         }
 
         private enum PotionType

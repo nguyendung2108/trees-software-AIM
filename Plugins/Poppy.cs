@@ -6,50 +6,56 @@ using LeagueSharp.Common;
 
 namespace AIM.Plugins
 {
-    public class Poppy : PluginBase
-    {
-        public static string[] Supports =
-        {
+	public class Poppy : PluginBase
+	{
+		public static string[] Supports =
+		{
+
             "Alistar", "Blitzcrank", "Braum", "Janna", "Karma", "Leona", "Lulu",
             "Morgana", "Nunu", "Nami", "Soraka", "Sona", "Taric", "Thresh", "Zyra"
-        };
+		};
 
-        public Poppy()
-        {
-            //spelldata from Mechanics-StackOverflow Galio
+		public Poppy()
+		{
+			//spelldata from Mechanics-StackOverflow Galio
             Q = new Spell(SpellSlot.Q, float.MaxValue);
-            W = new Spell(SpellSlot.W, float.MaxValue);
-            E = new Spell(SpellSlot.E, 525);
-            R = new Spell(SpellSlot.R, 900);
-        }
+			W = new Spell(SpellSlot.W, float.MaxValue);
+			E = new Spell(SpellSlot.E, 525);
+			R = new Spell(SpellSlot.R, 900);
+		}
 
-        public override void OnAfterAttack(AttackableUnit unit, AttackableUnit target)
-        {
-            var t = target as Obj_AI_Hero;
-            if (t != null && unit.IsMe)
-            {
-                if (unit.IsMe && Q.IsReady() && t.IsValidTarget(Q.Range))
-                {
-                    Q.Cast();
-                    Orbwalking.ResetAutoAttackTimer();
-                }
-            }
-        }
+		public override void OnAfterAttack(AttackableUnit unit, AttackableUnit target)
+		{
+			var t = target as Obj_AI_Hero;
+			if (t != null && unit.IsMe)
+			{
+				if (unit.IsMe && Q.IsReady() && t.IsValidTarget(Q.Range))
+				{
+					Q.Cast();
+					Orbwalking.ResetAutoAttackTimer();
+				}
+			}
+		}
 
-        public override void OnUpdate(EventArgs args)
-        {
-            if (ComboMode)
-            {
-                DoCombo(Target);
-            }
+		public override void OnUpdate(EventArgs args)
+		{
+			if (Q.IsReady()&&Player.CountEnemiesInRange(900) >= 1)
+			{
+				Q.Cast();
+			}	var tarpop = TargetSelector.GetTarget(900, TargetSelector.DamageType.Physical);
+
+                DoCombo(tarpop);
+           
         }
 
         private Obj_AI_Hero FindTank()
         {
             Obj_AI_Hero getTank = null;
             var tempmaxhp = 0.0f;
-            foreach (var target in
-                ObjectHandler.Get<Obj_AI_Hero>().Where(x => Player.Distance(x) <= R.Range && x.IsEnemy && !x.IsDead))
+            foreach (
+                var target in
+                    ObjectManager.Get<Obj_AI_Hero>().Where(x => Player.Distance(x) <= R.Range && x.IsEnemy && !x.IsDead)
+                )
             {
                 if (target != null)
                 {
@@ -79,12 +85,14 @@ namespace AIM.Plugins
 
             if (Player.CountEnemiesInRange(500) >= 2)
             {
-                foreach (var hero in
-                    from hero in
-                        ObjectHandler.Get<Obj_AI_Hero>()
-                            .Where(
-                                hero => hero.IsValidTarget(R.Range) && hero.IsEnemy && !hero.IsDead && IsSupport(hero))
-                    select hero)
+                foreach (
+                    var hero in
+                        from hero in
+                            ObjectManager.Get<Obj_AI_Hero>()
+                                .Where(
+                                    hero =>
+                                        hero.IsValidTarget(R.Range) && hero.IsEnemy && !hero.IsDead && IsSupport(hero))
+                        select hero)
                 {
                     if (hero != null)
                     {
@@ -95,7 +103,7 @@ namespace AIM.Plugins
                 R.CastOnUnit(FindTank());
             }
 
-            if (W.IsReady() && W.Range >= Player.Distance(target) && Orbwalking.InAutoAttackRange(target))
+            if (W.IsReady() && W.Range >= Player.Distance(target))
             {
                 W.Cast();
             }
@@ -104,16 +112,16 @@ namespace AIM.Plugins
             {
                 //from vayne markmans
                 foreach (
-                    var hero in from hero in ObjectHandler.Get<Obj_AI_Hero>().Where(hero => hero.IsValidTarget(525f))
+                    var hero in from hero in ObjectManager.Get<Obj_AI_Hero>().Where(hero => hero.IsValidTarget(525f))
                         let prediction = E.GetPrediction(hero)
                         where
                             NavMesh.GetCollisionFlags(
                                 prediction.UnitPosition.To2D()
-                                    .Extend(ObjectHandler.Player.ServerPosition.To2D(), -300)
+                                    .Extend(ObjectManager.Player.ServerPosition.To2D(), -300)
                                     .To3D()).HasFlag(CollisionFlags.Wall) ||
                             NavMesh.GetCollisionFlags(
                                 prediction.UnitPosition.To2D()
-                                    .Extend(ObjectHandler.Player.ServerPosition.To2D(), -(300 / 2))
+                                    .Extend(ObjectManager.Player.ServerPosition.To2D(), -(300 / 2))
                                     .To3D()).HasFlag(CollisionFlags.Wall)
                         select hero)
                 {

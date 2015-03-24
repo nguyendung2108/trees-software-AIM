@@ -28,50 +28,55 @@ using LeagueSharp.Common;
 
 namespace AIM.Plugins
 {
-    public class Default : PluginBase
-    {
-        public Default()
-        {
-            Author = "imsosharp";
-            Q = new Spell(SpellSlot.Q, 600);
-            W = new Spell(SpellSlot.W, 450);
-            E = new Spell(SpellSlot.E, 200);
-            R = new Spell(SpellSlot.R, 600);
+	public class Default : PluginBase
+	{
+		public Default()
+		{
+			Console.WriteLine("Default Base");
+			Author = "imsosharp";
+			Q = new Spell(SpellSlot.Q, 600);
+			W = new Spell(SpellSlot.W, 450);
+			E = new Spell(SpellSlot.E, 200);
+			R = new Spell(SpellSlot.R, 600);
 
-            var q = SpellData.GetSpellData(ObjectHandler.Player.GetSpell(SpellSlot.Q).Name);
-            var w = SpellData.GetSpellData(ObjectHandler.Player.GetSpell(SpellSlot.W).Name);
-            var e = SpellData.GetSpellData(ObjectHandler.Player.GetSpell(SpellSlot.E).Name);
-            var r = SpellData.GetSpellData(ObjectHandler.Player.GetSpell(SpellSlot.R).Name);
+			var q = SpellData.GetSpellData(ObjectManager.Player.GetSpell(SpellSlot.Q).Name);
+			var w = SpellData.GetSpellData(ObjectManager.Player.GetSpell(SpellSlot.W).Name);
+			var e = SpellData.GetSpellData(ObjectManager.Player.GetSpell(SpellSlot.E).Name);
+			var r = SpellData.GetSpellData(ObjectManager.Player.GetSpell(SpellSlot.R).Name);
 
-            Q.SetSkillshot(q.SpellCastTime, q.LineWidth, q.MissileSpeed, true, SkillshotType.SkillshotLine);
-            W.SetSkillshot(w.SpellCastTime, w.LineWidth, w.MissileSpeed, true, SkillshotType.SkillshotLine);
-            E.SetTargetted(e.SpellCastTime, e.SpellCastTime);
-            R.SetTargetted(r.SpellCastTime, r.SpellCastTime);
-        }
+			Q.SetSkillshot(q.SpellCastTime, q.LineWidth, q.MissileSpeed, true, SkillshotType.SkillshotLine);
+			W.SetSkillshot(w.SpellCastTime, w.LineWidth, w.MissileSpeed, true, SkillshotType.SkillshotLine);
+			E.SetTargetted(e.SpellCastTime, e.SpellCastTime);
+			R.SetTargetted(r.SpellCastTime, r.SpellCastTime);
+		}
 
-        public override void OnUpdate(EventArgs args)
-        {
-            if (ComboMode)
-            {
-                if (Q.CastCheck(Target, "ComboQ"))
-                {
-                    Q.Cast(Target);
-                }
-                if (W.CastCheck(Target, "ComboW"))
-                {
-                    W.Cast(Target);
-                }
-                if (E.CastCheck(Target, "ComboE"))
-                {
-                    E.Cast(Target);
-                }
+		public override void OnUpdate(EventArgs args)
+		{
+			if (ComboMode)
+			{
+				var targetgrag = TargetSelector.GetTarget(900, TargetSelector.DamageType.Magical);
+				if (targetgrag == null) return;
+				if (Q.CastCheck(targetgrag, "ComboQ"))
+				{
+					Q.Cast(targetgrag);
+				}
 
-                if (R.CastCheck(Target, "ComboR"))
-                {
-                    R.Cast(Target);
-                }
-            }
-        }
+				if (W.CastCheck(targetgrag, "ComboW"))
+				{
+					W.Cast(targetgrag);
+				}
+
+				if (E.CastCheck(targetgrag, "ComboE"))
+				{
+					E.Cast(targetgrag);
+
+                if (R.CastCheck(targetgrag, "ComboR"))
+					{
+						R.Cast(targetgrag);
+					}
+				}
+			}
+		}
 
         public override void ComboMenu(Menu config)
         {

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using AIM.Autoplay.Util.Data;
 using ClipperLib;
@@ -14,15 +15,12 @@ namespace AIM.Autoplay.Behaviors.Strategy.Positioning
     public class Util
     {
         /// <summary>
-        ///     Returns a list of points in the Ally Zone
+        /// Returns a list of points in the Ally Zone
         /// </summary>
         internal static Paths AllyZone()
         {
             var teamPolygons = new List<Geometry.Polygon>();
-            foreach (
-                var hero in
-                    ObjectHandler.Get<Obj_AI_Hero>()
-                        .Where(h => h.IsAlly && !h.IsDead && !h.IsMe && !(h.InFountain() || h.InShop())))
+            foreach (var hero in ObjectManager.Get<Obj_AI_Hero>().Where(h => h.IsAlly && !h.IsDead && !h.IsMe && !(h.InFountain() || h.InShop())))
             {
                 teamPolygons.Add(GetChampionRangeCircle(hero).ToPolygon());
             }
@@ -30,10 +28,10 @@ namespace AIM.Autoplay.Behaviors.Strategy.Positioning
             var newTeamPaths = teamPaths;
             foreach (var pathList in teamPaths)
             {
-                var wall = new Path();
+                Path wall = new Path();
                 foreach (var path in pathList)
                 {
-                    if (new Vector2(path.X, path.Y).IsWall())
+                    if (Utility.IsWall(new Vector2(path.X, path.Y)))
                     {
                         wall.Add(path);
                     }
@@ -44,12 +42,12 @@ namespace AIM.Autoplay.Behaviors.Strategy.Positioning
         }
 
         /// <summary>
-        ///     Returns a list of points in the Enemy Zone
+        /// Returns a list of points in the Enemy Zone
         /// </summary>
         internal static Paths EnemyZone()
         {
             var teamPolygons = new List<Geometry.Polygon>();
-            foreach (var hero in ObjectHandler.Get<Obj_AI_Hero>().FindAll(h => !h.IsAlly && !h.IsDead && h.IsVisible))
+            foreach (var hero in ObjectManager.Get<Obj_AI_Hero>().Where(h => !h.IsAlly && !h.IsDead && h.IsVisible))
             {
                 teamPolygons.Add(GetChampionRangeCircle(hero).ToPolygon());
             }
@@ -57,10 +55,10 @@ namespace AIM.Autoplay.Behaviors.Strategy.Positioning
             var newTeamPaths = teamPaths;
             foreach (var pathList in teamPaths)
             {
-                var wall = new Path();
+                Path wall = new Path();
                 foreach (var path in pathList)
                 {
-                    if (new Vector2(path.X, path.Y).IsWall())
+                    if (Utility.IsWall(new Vector2(path.X, path.Y)))
                     {
                         wall.Add(path);
                     }
@@ -69,9 +67,9 @@ namespace AIM.Autoplay.Behaviors.Strategy.Positioning
             }
             return newTeamPaths;
         }
-
+        
         /// <summary>
-        ///     Returns a circle with center at hero position and radius of the highest impact range a hero has.
+        /// Returns a circle with center at hero position and radius of the highest impact range a hero has.
         /// </summary>
         /// <param name="hero">The target hero.</param>
         internal static Geometry.Circle GetChampionRangeCircle(Obj_AI_Hero hero)
@@ -80,21 +78,19 @@ namespace AIM.Autoplay.Behaviors.Strategy.Positioning
             {
                 SpellData.GetSpellData(hero.GetSpell(SpellSlot.Q).Name),
                 SpellData.GetSpellData(hero.GetSpell(SpellSlot.W).Name),
-                SpellData.GetSpellData(hero.GetSpell(SpellSlot.E).Name)
+                SpellData.GetSpellData(hero.GetSpell(SpellSlot.E).Name),
             };
             var spellsOrderedByRange = heroSpells.OrderBy(s => s.CastRange);
             if (spellsOrderedByRange.FirstOrDefault() != null)
             {
                 var highestSpellRange = spellsOrderedByRange.FirstOrDefault().CastRange;
-                return new Geometry.Circle(
-                    hero.ServerPosition.To2D(),
-                    highestSpellRange > hero.AttackRange ? highestSpellRange : hero.AttackRange);
+                return new Geometry.Circle(hero.ServerPosition.To2D(), highestSpellRange> hero.AttackRange ? highestSpellRange : hero.AttackRange);
             }
             return new Geometry.Circle(hero.ServerPosition.To2D(), hero.AttackRange);
         }
 
         /// <summary>
-        ///     Returns a polygon that contains each position of a team champion
+        /// Returns a polygon that contains each position of a team champion
         /// </summary>
         /// <param name="allyTeam">returns the polygon for ally team if true, enemy if false</param>
         /// <returns></returns>
@@ -110,28 +106,25 @@ namespace AIM.Autoplay.Behaviors.Strategy.Positioning
         }
 
         /// <summary>
-        ///     Returns a clipper path list of all ally champions
+        /// Returns a clipper path list of all ally champions
         /// </summary>
         public Paths GetAllyPaths()
         {
             var allyPaths = new Paths(GetAllyPosList().Count);
-            for (var i = 0; i < GetAllyPosList().Count; i++)
+            for (int i = 0; i < GetAllyPosList().Count; i++)
             {
-                allyPaths[i].Add(
-                    new IntPoint(
-                        GetAllyPosList().ToArray()[i].X + Randoms.Rand.Next(-150, 150),
-                        GetAllyPosList().ToArray()[i].Y + Randoms.Rand.Next(-150, 150)));
+                allyPaths[i].Add(new IntPoint(GetAllyPosList().ToArray()[i].X + Randoms.Rand.Next(-150, 150), GetAllyPosList().ToArray()[i].Y + Randoms.Rand.Next(-150, 150)));
             }
             return allyPaths;
         }
 
         /// <summary>
-        ///     returns a clipper paths list of all enemy champion positions
+        /// returns a clipper paths list of all enemy champion positions
         /// </summary>
         public Paths GetEnemyPaths()
         {
             var enemyPaths = new Paths(GetEnemyPosList().Count);
-            for (var i = 0; i < GetEnemyPosList().Count; i++)
+            for (int i = 0; i < GetEnemyPosList().Count; i++)
             {
                 enemyPaths[i].Add(new IntPoint(GetEnemyPosList().ToArray()[i].X, GetEnemyPosList().ToArray()[i].Y));
             }
@@ -139,28 +132,25 @@ namespace AIM.Autoplay.Behaviors.Strategy.Positioning
         }
 
         /// <summary>
-        ///     returns a list of all ally positions
+        /// returns a list of all ally positions
         /// </summary>
         public List<Vector2> GetAllyPosList()
         {
-            var allies =
-                ObjectHandler.Get<Obj_AI_Hero>()
-                    .FindAll(h => h.IsAlly && !h.IsMe && !h.IsDead && !h.InFountain())
-                    .ToList();
+            var allies = ObjectManager.Get<Obj_AI_Hero>().Where(h => h.IsAlly && !h.IsMe && !h.IsDead && !h.InFountain()).ToList();
             return allies.Select(ally => ally.ServerPosition.To2D()).ToList();
         }
 
         /// <summary>
-        ///     returns a list of all enemy positions
+        /// returns a list of all enemy positions
         /// </summary>
         public List<Vector2> GetEnemyPosList()
         {
-            var enemies = ObjectHandler.Get<Obj_AI_Hero>().FindAll(h => h.IsEnemy && !h.IsDead && h.IsVisible).ToList();
+            var enemies = ObjectManager.Get<Obj_AI_Hero>().Where(h => h.IsEnemy && !h.IsDead && h.IsVisible).ToList();
             return enemies.Select(enemy => enemy.ServerPosition.To2D()).ToList();
         }
 
         /// <summary>
-        ///     draws a line (c) kortatu
+        /// draws a line (c) kortatu
         /// </summary>
         /// <param name="start">line start pos</param>
         /// <param name="end">line end pos</param>

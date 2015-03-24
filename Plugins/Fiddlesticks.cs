@@ -31,8 +31,9 @@ using ActiveGapcloser = AIM.Util.ActiveGapcloser;
 
 namespace AIM.Plugins
 {
-
     #region
+
+    
 
     #endregion
 
@@ -48,24 +49,40 @@ namespace AIM.Plugins
 
         public override void OnUpdate(EventArgs args)
         {
+			var target = TargetSelector.GetTarget(900, TargetSelector.DamageType.Magical);
+
             if (ComboMode)
             {
-                if (Q.CastCheck(Target, "Combo.Q"))
+				
+				if (target == null || Player.IsChannelingImportantSpell()) // Check if there is a target
+				{
+					return;
+				}
+				 if (R.IsReady()  && Player.CountEnemiesInRange(R.Range) > 1)
+				{
+					 R.Cast(target.ServerPosition);
+				}
+                if (Q.IsReady())
                 {
-                    Q.CastOnUnit(Target);
+                    Q.CastOnUnit(target);
                 }
 
-                if (E.CastCheck(Target, "Combo.E"))
+                if (E.IsReady())
                 {
-                    E.CastOnUnit(Target);
+                    E.CastOnUnit(target);
+					return;
                 }
+				if (W.IsReady())
+				{
+					W.CastOnUnit(target);
+				}
             }
 
             if (HarassMode)
             {
-                if (E.CastCheck(Target, "Harass.E"))
+                if (E.CastCheck(target, "Harass.E"))
                 {
-                    E.CastOnUnit(Target);
+                    E.CastOnUnit(target);
                 }
             }
         }

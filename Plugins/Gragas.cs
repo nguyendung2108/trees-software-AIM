@@ -8,61 +8,64 @@ using SharpDX;
 
 namespace AIM.Plugins
 {
-    public class Gragas : PluginBase
-    {
-        public GameObject Bomb;
-        public Obj_AI_Hero CurrentQTarget;
-        public Vector3 UltPos;
+	public class Gragas : PluginBase
+	{
+		public GameObject Bomb;
+		public Obj_AI_Hero CurrentQTarget;
+		public Vector3 UltPos;
 
-        public Gragas()
-        {
-            Q = new Spell(SpellSlot.Q, 775);
-            W = new Spell(SpellSlot.W, 0);
-            E = new Spell(SpellSlot.E, 600);
-            R = new Spell(SpellSlot.R, 1050);
-            Q.SetSkillshot(0.3f, 110f, 1000f, false, SkillshotType.SkillshotCircle);
-            E.SetSkillshot(0.3f, 50, 1000, true, SkillshotType.SkillshotLine);
-            R.SetSkillshot(0.3f, 700, 1000, false, SkillshotType.SkillshotCircle);
+		public Gragas()
+		{
+			Q = new Spell(SpellSlot.Q, 775);
+			W = new Spell(SpellSlot.W, 0);
+			E = new Spell(SpellSlot.E, 600);
+			R = new Spell(SpellSlot.R, 1050);
+			Q.SetSkillshot(0.3f, 110f, 1000f, false, SkillshotType.SkillshotCircle);
+			E.SetSkillshot(0.3f, 50, 1000, true, SkillshotType.SkillshotLine);
+			R.SetSkillshot(0.3f, 700, 1000, false, SkillshotType.SkillshotCircle);
 
-            GameObject.OnCreate += OnCreateObject;
-            GameObject.OnDelete += GameObject_OnDelete;
-        }
+			GameObject.OnCreate += OnCreateObject;
+			GameObject.OnDelete += GameObject_OnDelete;
+		}
 
-        public double BombMaxDamageTime { get; set; }
-        public double BombCreateTime { get; set; }
-        public bool BarrelIsCast { get; set; }
-        public bool Exploded { get; set; }
+		public double BombMaxDamageTime { get; set; }
+		public double BombCreateTime { get; set; }
+		public bool BarrelIsCast { get; set; }
+		public bool Exploded { get; set; }
 
-        private void OnCreateObject(GameObject sender, EventArgs args)
-        {
-            if (sender.Name == "Gragas_Base_Q_Ally.troy")
-            {
-                Bomb = sender;
-                BombCreateTime = Game.Time;
-                BombMaxDamageTime = BombCreateTime + 2;
-                BarrelIsCast = true;
-            }
-            if (sender.Name == "Gragas_Base_R_End.troy")
-            {
-                Exploded = true;
-                UltPos = sender.Position;
-                Utility.DelayAction.Add(3000, () => { Exploded = false; });
-            }
-        }
+		private void OnCreateObject(GameObject sender, EventArgs args)
+		{
+			if (sender.Name == "Gragas_Base_Q_Ally.troy")
+			{
+				Bomb = sender;
+				BombCreateTime = Game.Time;
+				BombMaxDamageTime = BombCreateTime + 2;
+				BarrelIsCast = true;
+			}
 
-        private void GameObject_OnDelete(GameObject sender, EventArgs args)
-        {
-            if (sender.Name == "Gragas_Base_Q_Ally.troy")
-            {
-                Bomb = null;
-            }
-        }
+			if (sender.Name == "Gragas_Base_R_End.troy")
+			{
+				Exploded = true;
+				UltPos = sender.Position;
+				Utility.DelayAction.Add(3000, () => { Exploded = false; });
+			}
+		}
 
-        public override void OnUpdate(EventArgs args)
-        {
-            if (ComboMode)
-            {
-                Combo(Target);
+		private void GameObject_OnDelete(GameObject sender, EventArgs args)
+		{
+			if (sender.Name == "Gragas_Base_Q_Ally.troy")
+			{
+				Bomb = null;
+			}
+		}
+
+		public override void OnUpdate(EventArgs args)
+		{
+			if (ComboMode)
+			{
+				var targetgrag = TargetSelector.GetTarget(900, TargetSelector.DamageType.Magical);
+
+                Combo(targetgrag);
             }
         }
 
@@ -164,9 +167,9 @@ namespace AIM.Plugins
                     {
                         if (E.Cast(t) == Spell.CastStates.SuccessfullyCasted)
                         {
-                            if (ObjectHandler.Player.HasBuff("gragaswself"))
+                            if (ObjectManager.Player.HasBuff("gragaswself"))
                             {
-                                ObjectHandler.Player.IssueOrder(GameObjectOrder.AttackTo, t);
+                                ObjectManager.Player.IssueOrder(GameObjectOrder.AttackTo, t);
                             }
                         }
                     }

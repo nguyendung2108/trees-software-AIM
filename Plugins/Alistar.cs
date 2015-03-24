@@ -31,26 +31,35 @@ using ActiveGapcloser = AIM.Util.ActiveGapcloser;
 
 namespace AIM.Plugins
 {
-
-    #region
+	#region
 
     #endregion
 
     public class Alistar : PluginBase
-    {
-        public Alistar()
-        {
-            Q = new Spell(SpellSlot.Q, 365);
-            W = new Spell(SpellSlot.W, 650);
-            E = new Spell(SpellSlot.E, 575);
-            R = new Spell(SpellSlot.R, 0);
+	{
+		public Alistar()
+		{
+			Q = new Spell(SpellSlot.Q, 365);
+			W = new Spell(SpellSlot.W, 650);
+			E = new Spell(SpellSlot.E, 575);
+			R = new Spell(SpellSlot.R, 0);
 
-            W.SetTargetted(0.5f, float.MaxValue);
-        }
+			W.SetTargetted(0.5f, float.MaxValue);
+		}
 
-        public override void OnUpdate(EventArgs args)
-        {
-            if (ComboMode)
+		public override void OnUpdate(EventArgs args)
+		{
+					 if (Player.HasBuffOfType(BuffType.Taunt) || Player.HasBuffOfType(BuffType.Stun) ||
+                    Player.HasBuffOfType(BuffType.Snare) || Player.HasBuffOfType(BuffType.Polymorph) ||
+                    Player.HasBuffOfType(BuffType.Blind) || Player.HasBuffOfType(BuffType.Fear) ||
+                    Player.HasBuffOfType(BuffType.Silence) ||  Player.HealthPercentage() < 90)
+                {
+                    if (R.IsReady())
+                    {
+                        R.Cast();
+                    }
+                }
+            if (ComboMode || true)
             {
                 if (Q.CastCheck(Target, "Combo.Q"))
                 {
