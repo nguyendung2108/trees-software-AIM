@@ -538,7 +538,7 @@ namespace AIM.Autoplay.Util
 
 
                 Player = ObjectHandler.Player;
-                Game.OnGameUpdate += GameOnOnGameUpdate;
+                Game.OnUpdate += GameOnOnGameUpdate;
                 Drawing.OnDraw += DrawingOnOnDraw;
             }
 
@@ -655,7 +655,7 @@ namespace AIM.Autoplay.Util
                         )
                     {
                         var t = (int) (Player.AttackCastDelay * 1000) - 100 + Game.Ping / 2 +
-                                1000 * (int) Player.Distance(minion) / (int) GetMyProjectileSpeed();
+                                1000 * (int) Player.Distance(minion.ServerPosition) / (int) GetMyProjectileSpeed();
                         var predHealth = HealthPrediction.GetHealthPrediction(minion, t, FarmDelay);
 
                         if (minion.Team != GameObjectTeam.Neutral && MinionManager.IsMinion(minion, true))
