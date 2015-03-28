@@ -18,7 +18,7 @@ namespace AIM.Autoplay
         {
             Game.OnWndProc += OnWndProc;
             CustomEvents.Game.OnGameLoad += OnGameLoad;
-            Game.OnGameUpdate += OnGameUpdate;
+            Game.OnUpdate += OnGameUpdate;
         }
 
         public static void OnWndProc(EventArgs args)
