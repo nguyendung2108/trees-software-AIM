@@ -538,7 +538,7 @@ namespace AIM.Autoplay.Util
 
 
                 Player = ObjectHandler.Player;
-                Game.OnUpdate += GameOnOnGameUpdate;
+                Game.OnUpdate += OnUpdate;
                 Drawing.OnDraw += DrawingOnOnDraw;
             }
 
@@ -766,7 +766,7 @@ namespace AIM.Autoplay.Util
                 return result;
             }
 
-            private void GameOnOnGameUpdate(EventArgs args)
+            private void OnUpdate(EventArgs args)
             {
                 try
                 {
