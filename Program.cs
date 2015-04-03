@@ -44,20 +44,7 @@ namespace AIM
 
                 try
                 {
-                    var type = Type.GetType("AIM.Plugins." + ObjectManager.Player.ChampionName);
-
-                    if (type != null)
-                    {
-                        Activator.CreateInstance(type);
-                        return;
-                    }
-
-                    type = Type.GetType("AIM.Plugins.Default");
-
-                    if (type != null)
-                    {
-                        Activator.CreateInstance(type);
-                    }
+                    new PluginLoader();
                 }
                 catch (Exception e)
                 {
